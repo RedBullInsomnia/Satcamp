@@ -36,7 +36,7 @@ namespace SatelliteServer
     ushort _lastYawVal;
     System.Timers.Timer _updateTimer;
 
-    //A delta of 11 on the trackbar means a delta of 1° for the camera
+    // A delta of 11 on the trackbar means a delta of 1° for the camera
     const double PitchAngleCoefficient = 11.11;
 
     public Window()
@@ -81,25 +81,28 @@ namespace SatelliteServer
       {
         if (_um6Driver != null)
         {
-          // Update pitch, yaw, roll values in interface
+          // Update Roll, pitch and yaw values in interface
+          tbRoll.Text = _um6Driver.Angles[0].ToString("F1");
           tbPitch.Text = _um6Driver.Angles[1].ToString("F1"); // F1 parameter specifies precision of 1 decimal
-          tbYaw.Text = _um6Driver.Angles[2].ToString("F1");
-          tbRoll.Text = _um6Driver.Angles[0].ToString("F1"); 
+          tbYaw.Text = _um6Driver.Angles[2].ToString("F1"); 
           _service._eulerAngles = new double[3] { _um6Driver.Angles[0], _um6Driver.Angles[1], _um6Driver.Angles[2] };
         }
 
+        // Update only if needed and then reset
         if (_service._servoChanged[0] == true)
         {
           pitchTrackBar.Value = _service._servoPos[0];
           _service._servoChanged[0] = false;
         }
 
+        // Same here
         if (_service._servoChanged[1] == true)
         {
           yawTrackBar.Value = _service._servoPos[1];
           _service._servoChanged[1] = false;
         }
 
+        // Check is stabilisation is wanted
         if (_service._bStabilizationChanged)
         {
           stabilizeCb.Checked = _service._bStabilizationActive;

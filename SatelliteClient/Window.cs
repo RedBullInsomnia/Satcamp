@@ -16,7 +16,7 @@ namespace SatelliteClient
 {
     public partial class Window : Form
     {
-      Bitmap image;
+        Bitmap image;
         bool _bConnected;
         System.Timers.Timer _captureTimer;
         System.Timers.Timer _updateTimer;

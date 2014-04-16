@@ -109,8 +109,6 @@ namespace SatelliteServer
             buffer = _captureStream.ToArray();
 
             return buffer;
-            
-            //return b;            
         }
 
         public double[] _eulerAngles;
