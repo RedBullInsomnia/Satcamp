@@ -11,9 +11,20 @@ using System.Drawing.Imaging;
 
 namespace SatelliteServer
 {
+
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     class SatService : ISatService
     {
+        public double[] _eulerAngles;
+        public int[] _servoPos;
+        public bool[] _servoChanged;
+        public bool _bStabilizationChanged;
+        public bool _bStabilizationActive;
+        MemoryStream _captureStream;
+        Bitmap _camImage;
+        AutoResetEvent _camEvent;
+        CameraDriver _camDriver; 
+
         public SatService(CameraDriver camDriver)
         {
             _camEvent = new AutoResetEvent(false);
@@ -110,15 +121,6 @@ namespace SatelliteServer
 
             return buffer;
         }
-
-        public double[] _eulerAngles;
-        public int[] _servoPos;
-        public bool[] _servoChanged;
-        public bool _bStabilizationChanged;
-        public  bool _bStabilizationActive;
-        MemoryStream _captureStream;
-        Bitmap _camImage;
-        AutoResetEvent _camEvent;
-        CameraDriver _camDriver;        
+       
     }
 }
