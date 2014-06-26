@@ -107,75 +107,23 @@ namespace SatelliteClient
         private void stabilizeCb_CheckedChanged(object sender, EventArgs e)
         {
             if (connectedFlag)
-            {
-                this.BeginInvoke(new Action(() =>
-                {
-                    try
-                    {
-                        satService.SetStabilization(stabilizeCb.Checked);
-                    }
-                    catch (System.ServiceModel.CommunicationException ex)
-                    {
-                        disconnect(ex.Message);
-                    }
-                    catch (System.TimeoutException ex)
-                    {
-                        disconnect(ex.Message);
-                    }
-                }));
-            }
+                this.BeginInvoke(new Action(() => updateStabilization()));
             else
-            {
                 MessageBox.Show("Please connect to the server first.");
-            }
         }
 
         private void pitchTrackBar_Scroll(object sender, EventArgs e)
         {
             if (connectedFlag)
-            {
-                this.BeginInvoke(new Action(() =>
-                {
-                    try
-                    {
-                        satService.SetServoPos(0, pitchTrackBar.Value);
-                    }
-                    catch (System.ServiceModel.CommunicationException ex)
-                    {
-                        disconnect(ex.Message);
-                    }
-                    catch (System.TimeoutException ex)
-                    {
-                        disconnect(ex.Message);
-                    }
-                }));
-            }
+                this.BeginInvoke(new Action(() => updatePitch()));
             else
-            {
                 MessageBox.Show("Please connect to the server first.");
-            }
         }
 
         private void yawTrackBar_Scroll(object sender, EventArgs e)
         {
             if (connectedFlag)
-            {
-                this.BeginInvoke(new Action(() =>
-                {
-                    try
-                    {
-                        satService.SetServoPos(1, yawTrackBar.Value);
-                    }
-                    catch (System.ServiceModel.CommunicationException ex)
-                    {
-                        disconnect(ex.Message);
-                    }
-                    catch (System.TimeoutException ex)
-                    {
-                        disconnect(ex.Message);
-                    }
-                }));
-            }
+                this.BeginInvoke(new Action(() => updateYaw()));
             else
                 MessageBox.Show("Please connect to the server first.");
         }
@@ -230,7 +178,7 @@ namespace SatelliteClient
             captureTimer.Enabled = false;
 
             if(scf != null) 
-                scf.Close();
+                scf.Abort();
 
             // update button status
             setButtonsDisconnected();
@@ -281,7 +229,10 @@ namespace SatelliteClient
 
                 connectedFlag = true;
 
-                setButtonsConnected();                
+                setButtonsConnected();
+          
+                // set stabilization
+                updateStabilization();
             }
             catch (Exception ex)
             {
@@ -306,13 +257,17 @@ namespace SatelliteClient
                 pitchTrackBar.Value = satService.GetServoPos(0);
                 yawTrackBar.Value = satService.GetServoPos(1);
             }
-            catch (System.ServiceModel.CommunicationException ex)
+            catch (CommunicationException ex)
             {
                 disconnect(ex.Message);
             }
-            catch (System.TimeoutException ex)
+            catch (TimeoutException ex)
             {
                 disconnect(ex.Message);
+            }
+            catch(Exception ex)
+            {
+                disconnect("Ex getAngles : ### : " + ex.Message);
             }
         }
 
@@ -330,8 +285,11 @@ namespace SatelliteClient
 
                 image = (Bitmap) Bitmap.FromStream(stream);
 
-                if(saveFlag)
+                if (saveFlag)
+                {
                     saveImage(image);
+                    saveFlag = false;
+                }
 
                 pictureBox.Image = image;
             }
@@ -343,8 +301,85 @@ namespace SatelliteClient
             {
                 disconnect(ex.Message);
             }
+            catch (Exception ex)
+            {
+                disconnect("Ex capture : ### : " + ex.Message);
+            }
         }
 
+
+        /**
+         * Update the stabilization based on the value of the checkbox
+         */
+        private void updateStabilization()
+        {
+            try
+            {
+                satService.SetStabilization(stabilizeCb.Checked);
+            }
+            catch (System.ServiceModel.CommunicationException ex)
+            {
+                disconnect(ex.Message);
+            }
+            catch (System.TimeoutException ex)
+            {
+                disconnect(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                disconnect("Ex stab : ### : " + ex.Message);
+            }
+        }
+     
+        /** 
+         * Send a update of the pitch to the server based on the pitch track bar
+         */ 
+        private void updatePitch()
+        {
+            try
+            {
+                satService.SetServoPos(0, pitchTrackBar.Value);
+            }
+            catch (System.ServiceModel.CommunicationException ex)
+            {
+                disconnect(ex.Message);
+            }
+            catch (System.TimeoutException ex)
+            {
+                disconnect(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                disconnect("Ex pitch update : ### : " + ex.Message);
+            }
+        }
+
+        /** 
+         * Send a update of the yaw to the server based on the yaw track bar
+         */ 
+        private void updateYaw()
+        {
+            try
+            {
+                satService.SetServoPos(1, yawTrackBar.Value);
+            }
+            catch (System.ServiceModel.CommunicationException ex)
+            {
+                disconnect(ex.Message);
+            }
+            catch (System.TimeoutException ex)
+            {
+                disconnect(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                disconnect("Ex yaw update : ### : " + ex.Message);
+            }
+        }
+        
+        /**
+         * Save the image currently saved (image class variable) (must be different from null)
+         */
         private void saveImage(Bitmap img)
         {
             String picture_name = "satpic_" + DateTime.Now.ToString("yyyymmdd_HHmmss");
