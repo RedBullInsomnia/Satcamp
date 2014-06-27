@@ -52,7 +52,6 @@ namespace SatelliteServer
       _cameraDriver.CameraCapture += _cameraDriver_CameraCapture;
 
       // initialize the service
-      //_host = new ServiceHost(typeof(SatService));
       NetTcpBinding binding = new NetTcpBinding();
       binding.MaxReceivedMessageSize = 20000000;
       binding.MaxBufferPoolSize = 20000000;
@@ -85,22 +84,20 @@ namespace SatelliteServer
           tbRoll.Text = _um6Driver.Angles[0].ToString("F1");
           tbPitch.Text = _um6Driver.Angles[1].ToString("F1"); // F1 parameter specifies precision of 1 decimal
           tbYaw.Text = _um6Driver.Angles[2].ToString("F1"); 
-          _service._eulerAngles = new double[3] { _um6Driver.Angles[0], _um6Driver.Angles[1], _um6Driver.Angles[2] };
+
+          for(int i = 0; i < 3; i++)
+            _service.SetEulerAngle(i, _um6Driver.Angles[i]);
         }
 
-        // Update only if needed and then reset
-        if (_service._servoChanged[0] == true)
-        {
-          pitchTrackBar.Value = _service._servoPos[0];
-          _service._servoChanged[0] = false;
-        }
+        int servo_pos;
+
+        // Update servo positions only if needed and then reset
+        if ((servo_pos = _service.GetServoPosIfChanged(0)) > -1)
+          pitchTrackBar.Value = servo_pos;
 
         // Same here
-        if (_service._servoChanged[1] == true)
-        {
-          yawTrackBar.Value = _service._servoPos[1];
-          _service._servoChanged[1] = false;
-        }
+        if ((servo_pos = _service.GetServoPosIfChanged(1)) > -1)
+          yawTrackBar.Value = servo_pos;
 
         // Check is stabilisation is wanted
         if (_service._bStabilizationChanged)
@@ -179,7 +176,7 @@ namespace SatelliteServer
       yawTrackBar.Value = clamp(tmp_yawtrackbarvalue, yawTrackBar.Maximum, yawTrackBar.Minimum);
     }
 
-    private int clamp(int a, int max, int min)
+   t private int clamp(int a, int max, int min)
     {
       if (a < min)
         a = min;
