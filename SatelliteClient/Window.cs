@@ -139,7 +139,7 @@ namespace SatelliteClient
             if(mode == Mode.MODE_VIDEO)
                 saveFlag = true;
             else if(image != null)
-                saveImage(image);
+                lock (image) { saveImage(image); }
             else
                 MessageBox.Show("You must have acquired some frames before trying to save them.");
         }
@@ -283,15 +283,18 @@ namespace SatelliteClient
                 Console.WriteLine("Received image with " + buffer.Length + " bytes.");
                 MemoryStream stream = new MemoryStream(buffer);
 
-                image = (Bitmap) Bitmap.FromStream(stream);
-
-                if (saveFlag)
+                lock (image)
                 {
-                    saveImage(image);
-                    saveFlag = false;
-                }
+                    image = (Bitmap) Bitmap.FromStream(stream);
 
-                pictureBox.Image = image;
+                    if (saveFlag)
+                    {
+                        saveImage(image);
+                        saveFlag = false;
+                    }
+
+                    pictureBox.Image = image;
+                }
             }
             catch (System.ServiceModel.CommunicationException ex)
             {
@@ -379,6 +382,7 @@ namespace SatelliteClient
         
         /**
          * Save the image currently saved (image class variable) (must be different from null)
+         * The accesses to the image must be locked
          */
         private void saveImage(Bitmap img)
         {
