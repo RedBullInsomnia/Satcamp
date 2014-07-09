@@ -11,7 +11,8 @@ using System.Drawing.Imaging;
 
 namespace SatelliteServer
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+
+    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple)]
     class SatService : ISatService
     {
         private double[] _eulerAngles;
@@ -19,7 +20,7 @@ namespace SatelliteServer
         private bool[] _servoChanged;
         private volatile bool _bStabilizationActive;
 
-        private const int MAX_CHANNEL = 10;
+        private static const int MAX_CHANNEL = 10;
 
         private Object capture_lock = new Object(),
                        servo_lock = new Object(),
@@ -36,6 +37,8 @@ namespace SatelliteServer
             _camEvent = new AutoResetEvent(false);
             _camDriver = camDriver;
             _camDriver.CameraCapture += _camDriver_CameraCapture;
+
+            _bStabilizationChanged = false;
 
             _servoPos = new int[MAX_CHANNEL];
             _servoChanged = new bool[MAX_CHANNEL];
@@ -183,9 +186,9 @@ namespace SatelliteServer
                 Console.WriteLine("Sending image with size " + buffer.Length);
                 //_captureStream.Read(buffer,0,(int)_captureStream.Length);
                 buffer = _captureStream.ToArray();
+            }
 
-                return buffer;
-            }      
+            return buffer;
         }    
     }
 }

@@ -38,12 +38,12 @@ namespace SatelliteServer
         void SetEulerAngle(int angle_id, double angle_value);
 
         /** 
-         * Returns the servo position (of given channel) and mark the servo value as "not modified"
-         * These actions are done only if the value was marked as modified before, otherwise this 
-         * method returns -1.
+         * Returns the servo position (of given channel) and update servo pos status
+         * to not modified. These are done only if the value of the servo was previously 
+         * modified otherwise this method returns -1.
          * Returns -2 if the channel is invalid
          */
         [OperationContract]
-        int GetServoPosIfChanged(int channel);
+        int GetServoPosIfChanged(int channel, int val);
     }
 }
