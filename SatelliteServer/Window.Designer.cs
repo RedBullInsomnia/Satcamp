@@ -87,7 +87,7 @@
       this.groupBoxOrientation.Size = new System.Drawing.Size(110, 97);
       this.groupBoxOrientation.TabIndex = 0;
       this.groupBoxOrientation.TabStop = false;
-      this.groupBoxOrientation.Text = "Actual orientation";
+      this.groupBoxOrientation.Text = "Orientation";
       // 
       // tbYaw
       // 
@@ -145,8 +145,7 @@
       // 
       // groupBoxServos
       // 
-      this.groupBoxServos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBoxServos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBoxServos.Controls.Add(this.numericYaw);
       this.groupBoxServos.Controls.Add(this.numericPitch);
       this.groupBoxServos.Controls.Add(this.stabilizeCb);
@@ -158,14 +157,15 @@
       this.groupBoxServos.Margin = new System.Windows.Forms.Padding(2);
       this.groupBoxServos.Name = "groupBoxServos";
       this.groupBoxServos.Padding = new System.Windows.Forms.Padding(2);
-      this.groupBoxServos.Size = new System.Drawing.Size(248, 97);
+      this.groupBoxServos.Size = new System.Drawing.Size(257, 97);
       this.groupBoxServos.TabIndex = 1;
       this.groupBoxServos.TabStop = false;
       this.groupBoxServos.Text = "Servos";
       // 
       // numericYaw
       // 
-      this.numericYaw.Location = new System.Drawing.Point(197, 44);
+      this.numericYaw.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.numericYaw.Location = new System.Drawing.Point(206, 42);
       this.numericYaw.Maximum = new decimal(new int[] {
             8000,
             0,
@@ -180,7 +180,7 @@
       this.numericYaw.Size = new System.Drawing.Size(48, 20);
       this.numericYaw.TabIndex = 17;
       this.numericYaw.Value = new decimal(new int[] {
-            4000,
+            6000,
             0,
             0,
             0});
@@ -188,7 +188,8 @@
       // 
       // numericPitch
       // 
-      this.numericPitch.Location = new System.Drawing.Point(197, 18);
+      this.numericPitch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.numericPitch.Location = new System.Drawing.Point(206, 17);
       this.numericPitch.Maximum = new decimal(new int[] {
             8000,
             0,
@@ -203,7 +204,7 @@
       this.numericPitch.Size = new System.Drawing.Size(48, 20);
       this.numericPitch.TabIndex = 16;
       this.numericPitch.Value = new decimal(new int[] {
-            4000,
+            6000,
             0,
             0,
             0});
@@ -213,12 +214,12 @@
       // 
       this.stabilizeCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.stabilizeCb.AutoSize = true;
-      this.stabilizeCb.Location = new System.Drawing.Point(96, 74);
+      this.stabilizeCb.Location = new System.Drawing.Point(188, 74);
       this.stabilizeCb.Margin = new System.Windows.Forms.Padding(2);
       this.stabilizeCb.Name = "stabilizeCb";
-      this.stabilizeCb.Size = new System.Drawing.Size(107, 17);
+      this.stabilizeCb.Size = new System.Drawing.Size(65, 17);
       this.stabilizeCb.TabIndex = 5;
-      this.stabilizeCb.Text = "Start Stabilization";
+      this.stabilizeCb.Text = "Stabilize";
       this.stabilizeCb.UseVisualStyleBackColor = true;
       this.stabilizeCb.CheckedChanged += new System.EventHandler(this.stabilizeCb_CheckedChanged);
       // 
@@ -228,12 +229,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.yawTrackBar.AutoSize = false;
       this.yawTrackBar.LargeChange = 100;
-      this.yawTrackBar.Location = new System.Drawing.Point(38, 41);
+      this.yawTrackBar.Location = new System.Drawing.Point(38, 42);
       this.yawTrackBar.Margin = new System.Windows.Forms.Padding(2);
       this.yawTrackBar.Maximum = 8000;
       this.yawTrackBar.Minimum = 4000;
       this.yawTrackBar.Name = "yawTrackBar";
-      this.yawTrackBar.Size = new System.Drawing.Size(165, 29);
+      this.yawTrackBar.Size = new System.Drawing.Size(174, 29);
       this.yawTrackBar.SmallChange = 10;
       this.yawTrackBar.TabIndex = 4;
       this.yawTrackBar.TickFrequency = 100;
@@ -246,12 +247,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.pitchTrackBar.AutoSize = false;
       this.pitchTrackBar.LargeChange = 100;
-      this.pitchTrackBar.Location = new System.Drawing.Point(39, 12);
+      this.pitchTrackBar.Location = new System.Drawing.Point(39, 17);
       this.pitchTrackBar.Margin = new System.Windows.Forms.Padding(2);
       this.pitchTrackBar.Maximum = 8000;
       this.pitchTrackBar.Minimum = 4000;
       this.pitchTrackBar.Name = "pitchTrackBar";
-      this.pitchTrackBar.Size = new System.Drawing.Size(164, 29);
+      this.pitchTrackBar.Size = new System.Drawing.Size(173, 29);
       this.pitchTrackBar.SmallChange = 10;
       this.pitchTrackBar.TabIndex = 3;
       this.pitchTrackBar.TickFrequency = 100;
@@ -261,7 +262,7 @@
       // label4
       // 
       this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(4, 44);
+      this.label4.Location = new System.Drawing.Point(4, 42);
       this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
       this.label4.Name = "label4";
       this.label4.Size = new System.Drawing.Size(28, 13);
@@ -271,7 +272,7 @@
       // label5
       // 
       this.label5.AutoSize = true;
-      this.label5.Location = new System.Drawing.Point(4, 20);
+      this.label5.Location = new System.Drawing.Point(4, 17);
       this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
       this.label5.Name = "label5";
       this.label5.Size = new System.Drawing.Size(31, 13);
@@ -287,14 +288,14 @@
       this.pictureBox.Location = new System.Drawing.Point(9, 111);
       this.pictureBox.Margin = new System.Windows.Forms.Padding(2);
       this.pictureBox.Name = "pictureBox";
-      this.pictureBox.Size = new System.Drawing.Size(658, 353);
+      this.pictureBox.Size = new System.Drawing.Size(667, 412);
       this.pictureBox.TabIndex = 2;
       this.pictureBox.TabStop = false;
       // 
       // captureBn
       // 
       this.captureBn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.captureBn.Location = new System.Drawing.Point(582, 470);
+      this.captureBn.Location = new System.Drawing.Point(591, 529);
       this.captureBn.Margin = new System.Windows.Forms.Padding(2);
       this.captureBn.Name = "captureBn";
       this.captureBn.Size = new System.Drawing.Size(84, 24);
@@ -305,8 +306,9 @@
       // 
       // ipLabel
       // 
+      this.ipLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.ipLabel.AutoSize = true;
-      this.ipLabel.Location = new System.Drawing.Point(10, 470);
+      this.ipLabel.Location = new System.Drawing.Point(10, 529);
       this.ipLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
       this.ipLabel.Name = "ipLabel";
       this.ipLabel.Size = new System.Drawing.Size(61, 13);
@@ -315,7 +317,7 @@
       // 
       // stabYaw
       // 
-      this.stabYaw.Location = new System.Drawing.Point(17, 41);
+      this.stabYaw.Location = new System.Drawing.Point(17, 42);
       this.stabYaw.Margin = new System.Windows.Forms.Padding(2);
       this.stabYaw.Name = "stabYaw";
       this.stabYaw.Size = new System.Drawing.Size(76, 20);
@@ -362,7 +364,7 @@
       // 
       // yerrorText
       // 
-      this.yerrorText.Location = new System.Drawing.Point(54, 41);
+      this.yerrorText.Location = new System.Drawing.Point(54, 42);
       this.yerrorText.Margin = new System.Windows.Forms.Padding(2);
       this.yerrorText.Name = "yerrorText";
       this.yerrorText.Size = new System.Drawing.Size(29, 20);
@@ -390,7 +392,7 @@
       // 
       // kiText
       // 
-      this.kiText.Location = new System.Drawing.Point(111, 41);
+      this.kiText.Location = new System.Drawing.Point(111, 42);
       this.kiText.Margin = new System.Windows.Forms.Padding(2);
       this.kiText.Name = "kiText";
       this.kiText.Size = new System.Drawing.Size(29, 20);
@@ -399,7 +401,7 @@
       // 
       // kpText
       // 
-      this.kpText.Location = new System.Drawing.Point(111, 15);
+      this.kpText.Location = new System.Drawing.Point(111, 17);
       this.kpText.Margin = new System.Windows.Forms.Padding(2);
       this.kpText.Name = "kpText";
       this.kpText.Size = new System.Drawing.Size(29, 20);
@@ -451,7 +453,7 @@
       // 
       // perrText
       // 
-      this.perrText.Location = new System.Drawing.Point(54, 14);
+      this.perrText.Location = new System.Drawing.Point(54, 17);
       this.perrText.Margin = new System.Windows.Forms.Padding(2);
       this.perrText.Name = "perrText";
       this.perrText.Size = new System.Drawing.Size(29, 20);
@@ -462,8 +464,7 @@
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Control;
-      this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-      this.ClientSize = new System.Drawing.Size(675, 503);
+      this.ClientSize = new System.Drawing.Size(684, 562);
       this.Controls.Add(this.Parameters);
       this.Controls.Add(this.stabPosBox);
       this.Controls.Add(this.ipLabel);
@@ -473,8 +474,9 @@
       this.Controls.Add(this.groupBoxOrientation);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Margin = new System.Windows.Forms.Padding(2);
+      this.MinimumSize = new System.Drawing.Size(700, 600);
       this.Name = "Window";
-      this.Text = "Server Application";
+      this.Text = "ServerApp";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Window_FormClosing);
       this.Load += new System.EventHandler(this.Window_Load);
       this.groupBoxOrientation.ResumeLayout(false);

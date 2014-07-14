@@ -229,7 +229,8 @@ namespace SatelliteServer
     private void Window_FormClosing(object sender, FormClosingEventArgs e)
     {
       _updateTimer.Stop();
-      _cameraDriver.StopVideo();
+      //_cameraDriver.StopVideo();
+      _cameraDriver.ShutDown();
       //TO DO : find a way to relax servos when program ends
     }
 

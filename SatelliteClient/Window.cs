@@ -120,6 +120,14 @@ namespace SatelliteClient
                 MessageBox.Show("Please connect to the server first.");
         }
 
+        private void numericPitch_ValueChanged(object sender, EventArgs e)
+        {
+          if (connectedFlag)
+            this.BeginInvoke(new Action(() => updatePitch()));
+          else
+            MessageBox.Show("Please connect to the server first.");
+        }
+
         private void yawTrackBar_Scroll(object sender, EventArgs e)
         {
             if (connectedFlag)
@@ -127,7 +135,14 @@ namespace SatelliteClient
             else
                 MessageBox.Show("Please connect to the server first.");
         }
-        
+
+        private void numericYaw_ValueChanged(object sender, EventArgs e)
+        {
+            if (connectedFlag)
+                this.BeginInvoke(new Action(() => updateYaw()));
+            else
+                MessageBox.Show("Please connect to the server first.");
+        }
 
         private void videoButton_Click(object sender, EventArgs e)
         {
@@ -194,6 +209,11 @@ namespace SatelliteClient
             videoButton.Enabled = false;
             captureButton.Enabled = false;
             disconnectButton.Enabled = false;
+            pitchTrackBar.Enabled = false;
+            numericPitch.Enabled = false;  
+            yawTrackBar.Enabled = false;
+            numericYaw.Enabled = false;
+            stabilizeCb.Enabled = false;
         }
 
         /**
@@ -206,6 +226,11 @@ namespace SatelliteClient
             videoButton.Enabled = true;
             captureButton.Enabled = true;
             disconnectButton.Enabled = true;
+            pitchTrackBar.Enabled = true;
+            numericPitch.Enabled = true;
+            yawTrackBar.Enabled = true;
+            numericYaw.Enabled = true;
+            stabilizeCb.Enabled = true;
         }
 
 
