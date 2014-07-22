@@ -147,14 +147,26 @@ namespace SatelliteServer
             //Refresh();
         }
 
-        public void StartVideo()
+        unsafe public void StartVideo()
         {
             double fps = 5.0;
             m_uc480.SetFrameRate(5.0, ref fps);
+            m_uc480.SetBadPixelCorrection(uc480.IS_BPC_ENABLE_SOFTWARE, 1); //trying to set bad pixel correction, needs to be studied more.
+            setAutoGainBoost(true);
+
             if (m_uc480.CaptureVideo(uc480.IS_WAIT) == uc480.IS_SUCCESS)
             {
                 m_bIsStarted = true;
             }
+        }
+
+        public int setAutoGainBoost(bool yes)
+        {
+            double autoGainEnable = 1;
+            double zero = 0;
+            int ret = m_uc480.SetAutoParameter(uc480.IS_SET_ENABLE_AUTO_GAIN, ref autoGainEnable, ref zero);
+
+            return ret;
         }
 
         public bool IsVideoStarted()
@@ -168,6 +180,15 @@ namespace SatelliteServer
             {
                 m_bIsStarted = false;
             }
+        }
+
+        /// <summary>
+        /// Used at program shutdown to release all ressources allocated to camera
+        /// </summary>
+        public void ShutDown()
+        {
+            if (m_uc480.IsOpen())
+                m_uc480.ExitCamera();
         }
 
         public void HandleMessage(int message, long lParam, long wParam)

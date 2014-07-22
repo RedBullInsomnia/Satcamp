@@ -230,6 +230,7 @@ namespace SatelliteServer
     {
       _updateTimer.Stop();
       _cameraDriver.StopVideo();
+      _cameraDriver.ShutDown();
       //TO DO : find a way to relax servos when program ends
     }
 

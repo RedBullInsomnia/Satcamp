@@ -59,7 +59,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Numerics">
@@ -89,10 +89,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CameraDriver.cs" />
+    <Compile Include="Drivers\CameraDriver.cs" />
     <Compile Include="ISatService.cs" />
     <Compile Include="SatService.cs" />
-    <Compile Include="ServoDriver.cs" />
+    <Compile Include="Drivers\ServoDriver.cs" />
     <Compile Include="Window.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -101,9 +101,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="uc480.cs" />
-    <Compile Include="uc480_defines.cs" />
-    <Compile Include="Um6Driver.cs" />
+    <Compile Include="Drivers\uc480.cs" />
+    <Compile Include="Drivers\uc480_defines.cs" />
+    <Compile Include="Drivers\Um6Driver.cs" />
     <EmbeddedResource Include="Window.resx">
       <DependentUpon>Window.cs</DependentUpon>
     </EmbeddedResource>
