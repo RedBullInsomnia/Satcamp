@@ -133,7 +133,7 @@ namespace SatelliteServer
         {
             // Calculate the error on the pitch axis
             double pitch_error = _um6Driver.Angles[1] - Stab_angles[1]; //- _stabPitchServo;
-            perr_int += pitch_error;
+            perr_int = pitch_error;
             perrText.Text = perr_int.ToString("F2"); // Print integral to interface
             int tmp_pitchtrackbarvalue = pitchTrackBar.Value + (int)(pitch_error * Kp * PitchAngleCoefficient);
                                                              //+ (int)(perr_int * Ki * PitchAngleCoefficient);
@@ -142,7 +142,7 @@ namespace SatelliteServer
 
             // Calculate the error on the yaw axis
             double yaw_error = _um6Driver.Angles[2] - Stab_angles[2]; // -_stabYawServo;
-            yerr_int += yaw_error;
+            yerr_int = yaw_error;
             yerrorText.Text = yerr_int.ToString("F2"); // Print integral to interface
             int tmp_yawtrackbarvalue = yawTrackBar.Value + (int)(yaw_error * Kp * PitchAngleCoefficient);
                                                          //+ (int)(yerr_int * Ki * PitchAngleCoefficient);
@@ -155,6 +155,7 @@ namespace SatelliteServer
       _updateTimer.Enabled = true;
     }
 
+    /*
     void customPid()
     {
       //Calculate the error on the pitch axis
@@ -170,7 +171,7 @@ namespace SatelliteServer
                                                    + (int)(yerr_int * Ki * PitchAngleCoefficient);
       // Clamp yaw servo
       yawTrackBar.Value = clamp(tmp_yawtrackbarvalue, yawTrackBar.Maximum, yawTrackBar.Minimum);
-    }
+    }*/
 
     private int clamp(int a, int max, int min)
     {
