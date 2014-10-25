@@ -45,7 +45,7 @@ namespace SatelliteClient
                     Console.Write("Received image with " + buffer.Length + " bytes.");
                     MemoryStream stream = new MemoryStream(buffer);
                     pictureBox.Image = new Bitmap(stream);
-                    //image = (Bitmap)pictureBox.Image;
+                    image = (Bitmap)pictureBox.Image;
                     captureBn.Enabled = true;
                 }));
             }
@@ -82,8 +82,7 @@ namespace SatelliteClient
                 using (MemoryStream stream = new MemoryStream(buffer))
                 {
                   pictureBox.Image = Bitmap.FromStream(stream);
-                  //image = (Bitmap)pictureBox.Image;
-                  //pictureBox.Image.Save("c:\\picture.png", System.Drawing.Imaging.ImageFormat.Png);
+                  image = (Bitmap)pictureBox.Image;
                   captureBn.Enabled = true;
                 }
             }
