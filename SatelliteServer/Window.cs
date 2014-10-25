@@ -282,7 +282,7 @@ namespace SatelliteServer
 
     private void pidCheckBox_CheckedChanged(object sender, EventArgs e)
     {
-      useCustomPid = customPidCheckBox.Checked;
+      //useCustomPid = customPidCheckBox.Checked;
       kiText.Enabled = !customPidCheckBox.Checked;
       kpText.Enabled = !customPidCheckBox.Checked;
     }
