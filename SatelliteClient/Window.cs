@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,15 +11,15 @@ using System.ServiceModel;
 using SatelliteClient.Properties;
 using System.IO;
 // print screen
-using System.Drawing;  
-using System.Drawing.Imaging
+using System.Drawing;
+using System.Drawing.Imaging;
 
 
 namespace SatelliteClient
 {
     public partial class Window : Form
     {
-        Bitmap image;
+        //Bitmap image;
         bool _bConnected;
         System.Timers.Timer _captureTimer;
         System.Timers.Timer _updateTimer;
@@ -178,13 +177,13 @@ namespace SatelliteClient
 
         private void saveImageButton_Click(object sender, EventArgs e)
         {
-		  //print screen
-			String picture_name = "satpic_" + DateTime.Now.ToString("yyyymmdd_HHmmss");
+		    //print screen
+			  String picture_name = "satpic_" + DateTime.Now.ToString("yyyymmdd_HHmmss");
 			
-			Bitmap printscreen = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
-			Graphics graphics = Graphics.FromImage(printscreen as Image);
-			graphics.CopyFromScreen(0, 0, 0, 0, printscreen.Size);
-			printscreen.Save("C:\\Users\\Satcamp1\\"+ picture_name + ".jpg", ImageFormat.Jpeg);
+			  Bitmap printscreen = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+			  Graphics graphics = Graphics.FromImage(printscreen as Image);
+			  graphics.CopyFromScreen(0, 0, 0, 0, printscreen.Size);
+			  printscreen.Save("C:\\Users\\Huwok\\"+ picture_name + ".jpg", ImageFormat.Jpeg);
 
 		/*
           if(image != null){
@@ -193,6 +192,6 @@ namespace SatelliteClient
 		  }else
 			  MessageBox.Show("You failed");
         */
-		}
+		    }
     }
 }

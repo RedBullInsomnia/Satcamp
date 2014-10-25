@@ -19,12 +19,11 @@ namespace SatelliteServer
   {
     // For stabilization
     Double[] Stab_angles = new double[3];
-    double Kp = 5;
-    double Ki = 0;
+    double Kp = 0.5, Ki = 0;
     double perr_int = 0; //integral of pitch error
     double yerr_int = 0; //integral of yaw error
     int _stabPitchServo, _stabYawServo;
-    bool useCustomPid;
+    //bool useCustomPid;
 
     // Everything else
     Um6Driver _um6Driver;
@@ -66,7 +65,7 @@ namespace SatelliteServer
       _host.Open();
 
       // Initial positions
-      _stabPitchServo = 4000;
+      _stabPitchServo = 6000;
       _stabYawServo = 6000;
 
       // Initial pid parameters
@@ -132,18 +131,12 @@ namespace SatelliteServer
         // do stabilization if necessary
         if (stabilizeCb.Checked)
         {
-          if (true == useCustomPid)
-          {
-            customPid();
-          }
-          else
-          {
-            //Calculate the error on the pitch axis
+            // Calculate the error on the pitch axis
             double pitch_error = _um6Driver.Angles[1] - Stab_angles[1]; //- _stabPitchServo;
             perr_int += pitch_error;
             perrText.Text = perr_int.ToString("F2"); // Print integral to interface
-            int tmp_pitchtrackbarvalue = pitchTrackBar.Value + (int)(pitch_error * Kp * PitchAngleCoefficient)
-                                                             + (int)(perr_int * Ki * PitchAngleCoefficient);
+            int tmp_pitchtrackbarvalue = pitchTrackBar.Value + (int)(pitch_error * Kp * PitchAngleCoefficient);
+                                                             //+ (int)(perr_int * Ki * PitchAngleCoefficient);
             // Clamp pitch servo
             pitchTrackBar.Value = clamp(tmp_pitchtrackbarvalue, pitchTrackBar.Maximum, pitchTrackBar.Minimum);
 
@@ -151,13 +144,13 @@ namespace SatelliteServer
             double yaw_error = _um6Driver.Angles[2] - Stab_angles[2]; // -_stabYawServo;
             yerr_int += yaw_error;
             yerrorText.Text = yerr_int.ToString("F2"); // Print integral to interface
-            int tmp_yawtrackbarvalue = yawTrackBar.Value + (int)(yaw_error * Kp * PitchAngleCoefficient)
-                                                         + (int)(yerr_int * Ki * PitchAngleCoefficient);
+            int tmp_yawtrackbarvalue = yawTrackBar.Value + (int)(yaw_error * Kp * PitchAngleCoefficient);
+                                                         //+ (int)(yerr_int * Ki * PitchAngleCoefficient);
 
             // Clamp yaw servo
             yawTrackBar.Value = clamp(tmp_yawtrackbarvalue, yawTrackBar.Maximum, yawTrackBar.Minimum);
+          
           }
-        }
       }));
       _updateTimer.Enabled = true;
     }
