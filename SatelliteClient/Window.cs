@@ -174,14 +174,10 @@ namespace SatelliteClient
 
         private void saveImageButton_Click(object sender, EventArgs e)
         {
-          if(image != null){
-            lock (image)
-            {
-              String picture_name = "satpic_" + DateTime.Now.ToString("yyyymmdd_HHmmss");
-              image.Save("c:\\Users\\Satcamp1\\" + picture_name + ".png", System.Drawing.Imaging.ImageFormat.Png);
-            }
-          } else
-			      MessageBox.Show("You failed");
+            if(image != null)
+                lock (image) { saveImage(image); }
+            else
+                MessageBox.Show("You must have acquired some frames before trying to save them.");
         }
 
         /**
