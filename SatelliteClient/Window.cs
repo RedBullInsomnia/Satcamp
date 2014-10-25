@@ -11,6 +11,10 @@ using System.Timers;
 using System.ServiceModel;
 using SatelliteClient.Properties;
 using System.IO;
+// print screen
+using System.Drawing;  
+using System.Drawing.Imaging
+
 
 namespace SatelliteClient
 {
@@ -45,7 +49,7 @@ namespace SatelliteClient
                     Console.Write("Received image with " + buffer.Length + " bytes.");
                     MemoryStream stream = new MemoryStream(buffer);
                     pictureBox.Image = new Bitmap(stream);
-                    image = (Bitmap)pictureBox.Image;
+                   // image = (Bitmap)pictureBox.Image;
                     captureBn.Enabled = true;
                 }));
             }
@@ -82,7 +86,7 @@ namespace SatelliteClient
                 using (MemoryStream stream = new MemoryStream(buffer))
                 {
                   pictureBox.Image = Bitmap.FromStream(stream);
-                  image = (Bitmap)pictureBox.Image;
+                  //image = (Bitmap)pictureBox.Image;
                   captureBn.Enabled = true;
                 }
             }
@@ -174,11 +178,21 @@ namespace SatelliteClient
 
         private void saveImageButton_Click(object sender, EventArgs e)
         {
+		  //print screen
+			String picture_name = "satpic_" + DateTime.Now.ToString("yyyymmdd_HHmmss");
+			
+			Bitmap printscreen = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+			Graphics graphics = Graphics.FromImage(printscreen as Image);
+			graphics.CopyFromScreen(0, 0, 0, 0, printscreen.Size);
+			printscreen.Save("C:\\Users\\Satcamp1\\"+ picture_name + ".jpg", ImageFormat.Jpeg);
+
+		/*
           if(image != null){
 			String picture_name = "satpic_" + DateTime.Now.ToString("yyyymmdd_HHmmss");
 			  image.Save("c:\\Users\\Satcamp1\\"+ picture_name + ".png", System.Drawing.Imaging.ImageFormat.Png);
 		  }else
 			  MessageBox.Show("You failed");
-        }
+        */
+		}
     }
 }
