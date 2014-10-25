@@ -17,16 +17,20 @@ namespace SatelliteServer
 {
   public partial class Window : Form
   {
-    // For stabilization
+    /// <summary>
+    /// Variables used in the stabilization operation
+    /// </summary>
     Double[] Stab_angles = new double[3];
     double Kp = 5;
     double Ki = 0;
-    double perr_int = 0; //integral of pitch error
-    double yerr_int = 0; //integral of yaw error
+    double perr_int; //integral of pitch error
+    double yerr_int; //integral of yaw error
     int _stabPitchServo, _stabYawServo;
     bool useCustomPid;
 
-    // Everything else
+    /// <summary>
+    /// Camera, orientation and servos variables
+    /// </summary>
     Um6Driver _um6Driver;
     CameraDriver _cameraDriver;
     ServoDriver _servoDriver;
@@ -66,12 +70,15 @@ namespace SatelliteServer
       _host.Open();
 
       // Initial positions
-      _stabPitchServo = 4000;
+      _stabPitchServo = 6000;
       _stabYawServo = 6000;
 
       // Initial pid parameters
       kiText.Text = Ki.ToString();
       kpText.Text = Kp.ToString();
+      useCustomPid = true;
+      yerr_int = 0;
+      perr_int = 0;
     }
 
     void _updateTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -231,7 +238,6 @@ namespace SatelliteServer
       _updateTimer.Stop();
       //_cameraDriver.StopVideo();
       _cameraDriver.ShutDown();
-      //TO DO : find a way to relax servos when program ends
     }
 
     public void GetIpAddress()
