@@ -175,7 +175,11 @@ namespace SatelliteClient
 
         private void saveImageButton_Click(object sender, EventArgs e)
         {
-          image.Save("c:\\picture.png", System.Drawing.Imaging.ImageFormat.Png);
+          if(image != null){
+			String picture_name = "satpic_" + DateTime.Now.ToString("yyyymmdd_HHmmss");
+			  image.Save("c:\\Users\\Satcamp1\\"+ picture_name + ".png", System.Drawing.Imaging.ImageFormat.Png);
+		  }else
+			  MessageBox.Show("You failed");
         }
     }
 }
