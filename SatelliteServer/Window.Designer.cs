@@ -51,15 +51,6 @@
       this.stabPitch = new System.Windows.Forms.TextBox();
       this.stabRoll = new System.Windows.Forms.TextBox();
       this.stabPosBox = new System.Windows.Forms.GroupBox();
-      this.yerrLabel = new System.Windows.Forms.Label();
-      this.yerrorText = new System.Windows.Forms.TextBox();
-      this.kiLabel = new System.Windows.Forms.Label();
-      this.kpLabel = new System.Windows.Forms.Label();
-      this.kiText = new System.Windows.Forms.TextBox();
-      this.kpText = new System.Windows.Forms.TextBox();
-      this.Parameters = new System.Windows.Forms.GroupBox();
-      this.perrLabel = new System.Windows.Forms.Label();
-      this.perrText = new System.Windows.Forms.TextBox();
       this.groupBoxOrientation.SuspendLayout();
       this.groupBoxServos.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.numericYaw)).BeginInit();
@@ -68,7 +59,6 @@
       ((System.ComponentModel.ISupportInitialize)(this.pitchTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
       this.stabPosBox.SuspendLayout();
-      this.Parameters.SuspendLayout();
       this.SuspendLayout();
       // 
       // groupBoxOrientation
@@ -152,11 +142,11 @@
       this.groupBoxServos.Controls.Add(this.pitchTrackBar);
       this.groupBoxServos.Controls.Add(this.label4);
       this.groupBoxServos.Controls.Add(this.label5);
-      this.groupBoxServos.Location = new System.Drawing.Point(418, 10);
+      this.groupBoxServos.Location = new System.Drawing.Point(265, 10);
       this.groupBoxServos.Margin = new System.Windows.Forms.Padding(2);
       this.groupBoxServos.Name = "groupBoxServos";
       this.groupBoxServos.Padding = new System.Windows.Forms.Padding(2);
-      this.groupBoxServos.Size = new System.Drawing.Size(257, 97);
+      this.groupBoxServos.Size = new System.Drawing.Size(410, 97);
       this.groupBoxServos.TabIndex = 1;
       this.groupBoxServos.TabStop = false;
       this.groupBoxServos.Text = "Servos";
@@ -164,7 +154,7 @@
       // numericYaw
       // 
       this.numericYaw.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.numericYaw.Location = new System.Drawing.Point(206, 47);
+      this.numericYaw.Location = new System.Drawing.Point(359, 47);
       this.numericYaw.Maximum = new decimal(new int[] {
             8000,
             0,
@@ -188,7 +178,7 @@
       // numericPitch
       // 
       this.numericPitch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.numericPitch.Location = new System.Drawing.Point(206, 18);
+      this.numericPitch.Location = new System.Drawing.Point(359, 18);
       this.numericPitch.Maximum = new decimal(new int[] {
             8000,
             0,
@@ -213,7 +203,7 @@
       // 
       this.stabilizeCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.stabilizeCb.AutoSize = true;
-      this.stabilizeCb.Location = new System.Drawing.Point(188, 74);
+      this.stabilizeCb.Location = new System.Drawing.Point(341, 74);
       this.stabilizeCb.Margin = new System.Windows.Forms.Padding(2);
       this.stabilizeCb.Name = "stabilizeCb";
       this.stabilizeCb.Size = new System.Drawing.Size(65, 17);
@@ -233,7 +223,7 @@
       this.yawTrackBar.Maximum = 8000;
       this.yawTrackBar.Minimum = 4000;
       this.yawTrackBar.Name = "yawTrackBar";
-      this.yawTrackBar.Size = new System.Drawing.Size(174, 29);
+      this.yawTrackBar.Size = new System.Drawing.Size(327, 29);
       this.yawTrackBar.SmallChange = 10;
       this.yawTrackBar.TabIndex = 4;
       this.yawTrackBar.TickFrequency = 100;
@@ -251,7 +241,7 @@
       this.pitchTrackBar.Maximum = 8000;
       this.pitchTrackBar.Minimum = 4000;
       this.pitchTrackBar.Name = "pitchTrackBar";
-      this.pitchTrackBar.Size = new System.Drawing.Size(173, 29);
+      this.pitchTrackBar.Size = new System.Drawing.Size(326, 29);
       this.pitchTrackBar.SmallChange = 10;
       this.pitchTrackBar.TabIndex = 3;
       this.pitchTrackBar.TickFrequency = 100;
@@ -350,105 +340,12 @@
       this.stabPosBox.TabStop = false;
       this.stabPosBox.Text = "Stabilize to this";
       // 
-      // yerrLabel
-      // 
-      this.yerrLabel.AutoSize = true;
-      this.yerrLabel.Location = new System.Drawing.Point(5, 44);
-      this.yerrLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-      this.yerrLabel.Name = "yerrLabel";
-      this.yerrLabel.Size = new System.Drawing.Size(42, 13);
-      this.yerrLabel.TabIndex = 17;
-      this.yerrLabel.Text = "Yaw int";
-      // 
-      // yerrorText
-      // 
-      this.yerrorText.Location = new System.Drawing.Point(54, 42);
-      this.yerrorText.Margin = new System.Windows.Forms.Padding(2);
-      this.yerrorText.Name = "yerrorText";
-      this.yerrorText.Size = new System.Drawing.Size(29, 20);
-      this.yerrorText.TabIndex = 16;
-      // 
-      // kiLabel
-      // 
-      this.kiLabel.AutoSize = true;
-      this.kiLabel.Location = new System.Drawing.Point(87, 44);
-      this.kiLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-      this.kiLabel.Name = "kiLabel";
-      this.kiLabel.Size = new System.Drawing.Size(16, 13);
-      this.kiLabel.TabIndex = 15;
-      this.kiLabel.Text = "Ki";
-      // 
-      // kpLabel
-      // 
-      this.kpLabel.AutoSize = true;
-      this.kpLabel.Location = new System.Drawing.Point(87, 17);
-      this.kpLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-      this.kpLabel.Name = "kpLabel";
-      this.kpLabel.Size = new System.Drawing.Size(20, 13);
-      this.kpLabel.TabIndex = 14;
-      this.kpLabel.Text = "Kp";
-      // 
-      // kiText
-      // 
-      this.kiText.Location = new System.Drawing.Point(111, 42);
-      this.kiText.Margin = new System.Windows.Forms.Padding(2);
-      this.kiText.Name = "kiText";
-      this.kiText.Size = new System.Drawing.Size(29, 20);
-      this.kiText.TabIndex = 13;
-      this.kiText.TextChanged += new System.EventHandler(this.kiText_TextChanged);
-      // 
-      // kpText
-      // 
-      this.kpText.Location = new System.Drawing.Point(111, 17);
-      this.kpText.Margin = new System.Windows.Forms.Padding(2);
-      this.kpText.Name = "kpText";
-      this.kpText.Size = new System.Drawing.Size(29, 20);
-      this.kpText.TabIndex = 12;
-      this.kpText.TextChanged += new System.EventHandler(this.kpText_TextChanged);
-      // 
-      // Parameters
-      // 
-      this.Parameters.Controls.Add(this.perrLabel);
-      this.Parameters.Controls.Add(this.perrText);
-      this.Parameters.Controls.Add(this.yerrLabel);
-      this.Parameters.Controls.Add(this.kpText);
-      this.Parameters.Controls.Add(this.yerrorText);
-      this.Parameters.Controls.Add(this.kiText);
-      this.Parameters.Controls.Add(this.kiLabel);
-      this.Parameters.Controls.Add(this.kpLabel);
-      this.Parameters.Location = new System.Drawing.Point(266, 10);
-      this.Parameters.Name = "Parameters";
-      this.Parameters.Size = new System.Drawing.Size(147, 97);
-      this.Parameters.TabIndex = 13;
-      this.Parameters.TabStop = false;
-      this.Parameters.Text = "PID Parameters";
-      // 
-      // perrLabel
-      // 
-      this.perrLabel.AutoSize = true;
-      this.perrLabel.Location = new System.Drawing.Point(5, 17);
-      this.perrLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-      this.perrLabel.MinimumSize = new System.Drawing.Size(800, 800);
-      this.perrLabel.Name = "perrLabel";
-      this.perrLabel.Size = new System.Drawing.Size(800, 800);
-      this.perrLabel.TabIndex = 19;
-      this.perrLabel.Text = "Pitch int";
-      // 
-      // perrText
-      // 
-      this.perrText.Location = new System.Drawing.Point(54, 17);
-      this.perrText.Margin = new System.Windows.Forms.Padding(2);
-      this.perrText.Name = "perrText";
-      this.perrText.Size = new System.Drawing.Size(29, 20);
-      this.perrText.TabIndex = 18;
-      // 
       // Window
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Control;
       this.ClientSize = new System.Drawing.Size(684, 562);
-      this.Controls.Add(this.Parameters);
       this.Controls.Add(this.stabPosBox);
       this.Controls.Add(this.ipLabel);
       this.Controls.Add(this.captureBn);
@@ -473,8 +370,6 @@
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
       this.stabPosBox.ResumeLayout(false);
       this.stabPosBox.PerformLayout();
-      this.Parameters.ResumeLayout(false);
-      this.Parameters.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -502,15 +397,6 @@
         private System.Windows.Forms.TextBox stabPitch;
         private System.Windows.Forms.TextBox stabRoll;
         private System.Windows.Forms.GroupBox stabPosBox;
-        private System.Windows.Forms.TextBox kiText;
-        private System.Windows.Forms.TextBox kpText;
-        private System.Windows.Forms.Label kiLabel;
-        private System.Windows.Forms.Label kpLabel;
-        private System.Windows.Forms.Label yerrLabel;
-        private System.Windows.Forms.TextBox yerrorText;
-        private System.Windows.Forms.GroupBox Parameters;
-        private System.Windows.Forms.Label perrLabel;
-        private System.Windows.Forms.TextBox perrText;
         private System.Windows.Forms.NumericUpDown numericPitch;
         private System.Windows.Forms.NumericUpDown numericYaw;
 

@@ -19,11 +19,8 @@ namespace SatelliteServer
   {
     // For stabilization
     Double[] Stab_angles = new double[3];
-    double Kp = 0.5, Ki = 0;
-    double perr_int = 0; //integral of pitch error
-    double yerr_int = 0; //integral of yaw error
-    int _stabPitchServo, _stabYawServo;
-    //bool useCustomPid;
+    const double Kp = 0.05;
+    const double PitchAngleCoefficient = 11.11; // A delta of 11 on the trackbar means a delta of 1° for the camera
 
     // Everything else
     Um6Driver _um6Driver;
@@ -34,9 +31,6 @@ namespace SatelliteServer
     ushort _lastPitchVal;
     ushort _lastYawVal;
     System.Timers.Timer _updateTimer;
-
-    // A delta of 11 on the trackbar means a delta of 1° for the camera
-    const double PitchAngleCoefficient = 11.11;
 
     public Window()
     {
@@ -63,14 +57,6 @@ namespace SatelliteServer
                              binding,
                              "net.tcp://localhost:8000");
       _host.Open();
-
-      // Initial positions
-      _stabPitchServo = 6000;
-      _stabYawServo = 6000;
-
-      // Initial pid parameters
-      kiText.Text = Ki.ToString();
-      kpText.Text = Kp.ToString();
     }
 
     void _updateTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -132,46 +118,22 @@ namespace SatelliteServer
         if (stabilizeCb.Checked)
         {
             // Calculate the error on the pitch axis
-            double pitch_error = _um6Driver.Angles[1] - Stab_angles[1]; //- _stabPitchServo;
-            perr_int = pitch_error;
-            perrText.Text = perr_int.ToString("F2"); // Print integral to interface
+            double pitch_error = _um6Driver.Angles[1] - Stab_angles[1];
             int tmp_pitchtrackbarvalue = pitchTrackBar.Value + (int)(pitch_error * Kp * PitchAngleCoefficient);
-                                                             //+ (int)(perr_int * Ki * PitchAngleCoefficient);
+
             // Clamp pitch servo
             pitchTrackBar.Value = clamp(tmp_pitchtrackbarvalue, pitchTrackBar.Maximum, pitchTrackBar.Minimum);
 
             // Calculate the error on the yaw axis
-            double yaw_error = _um6Driver.Angles[2] - Stab_angles[2]; // -_stabYawServo;
-            yerr_int = yaw_error;
-            yerrorText.Text = yerr_int.ToString("F2"); // Print integral to interface
+            double yaw_error = _um6Driver.Angles[2] - Stab_angles[2];
             int tmp_yawtrackbarvalue = yawTrackBar.Value + (int)(yaw_error * Kp * PitchAngleCoefficient);
-                                                         //+ (int)(yerr_int * Ki * PitchAngleCoefficient);
 
             // Clamp yaw servo
             yawTrackBar.Value = clamp(tmp_yawtrackbarvalue, yawTrackBar.Maximum, yawTrackBar.Minimum);
-          
           }
       }));
       _updateTimer.Enabled = true;
     }
-
-    /*
-    void customPid()
-    {
-      //Calculate the error on the pitch axis
-      double pitch_error = _um6Driver.Angles[1] - Stab_angles[1];
-      int tmp_pitchtrackbarvalue = _stabPitchServo + (int)(pitch_error * Kp * PitchAngleCoefficient)
-                                                       + (int)(perr_int * Ki * PitchAngleCoefficient);
-      // Clamp pitch servo
-      pitchTrackBar.Value = clamp(tmp_pitchtrackbarvalue, pitchTrackBar.Maximum, pitchTrackBar.Minimum);
-
-      // Calculate the error on the yaw axis
-      double yaw_error = _um6Driver.Angles[2] - Stab_angles[2]; 
-      int tmp_yawtrackbarvalue = _stabYawServo + (int)(yaw_error * Kp * PitchAngleCoefficient)
-                                                   + (int)(yerr_int * Ki * PitchAngleCoefficient);
-      // Clamp yaw servo
-      yawTrackBar.Value = clamp(tmp_yawtrackbarvalue, yawTrackBar.Maximum, yawTrackBar.Minimum);
-    }*/
 
     private int clamp(int a, int max, int min)
     {
@@ -247,14 +209,6 @@ namespace SatelliteServer
     {
       if (stabilizeCb.Checked == true)
       {
-        // Parse pid parameters Ki and Kp
-        Ki = float.Parse(kiText.Text);
-        Kp = float.Parse(kpText.Text);
-
-        // reset error integrals
-        perr_int = 0;
-        yerr_int = 0;
-
         // save desired angles
         Stab_angles[0] = _um6Driver.Angles[0]; //Roll
         Stab_angles[1] = _um6Driver.Angles[1]; //Pitch
@@ -265,20 +219,7 @@ namespace SatelliteServer
         stabYaw.Text = Stab_angles[2].ToString("F1");
         stabRoll.Text = Stab_angles[0].ToString("F1");
 
-        //Save values of trackbars
-        _stabPitchServo = pitchTrackBar.Value;
-        _stabYawServo = yawTrackBar.Value;
       }
-    }
-
-    private void kpText_TextChanged(object sender, EventArgs e)
-    {
-      Kp = float.Parse(kpText.Text);
-    }
-
-    private void kiText_TextChanged(object sender, EventArgs e)
-    {
-      Ki = float.Parse(kiText.Text);
     }
 
     private void pitchTrackBar_Scroll(object sender, EventArgs e)
