@@ -64,9 +64,9 @@
       this.groupBoxOrientation.Controls.Add(this.label2);
       this.groupBoxOrientation.Controls.Add(this.label1);
       this.groupBoxOrientation.Location = new System.Drawing.Point(9, 10);
-      this.groupBoxOrientation.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.groupBoxOrientation.Margin = new System.Windows.Forms.Padding(2);
       this.groupBoxOrientation.Name = "groupBoxOrientation";
-      this.groupBoxOrientation.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.groupBoxOrientation.Padding = new System.Windows.Forms.Padding(2);
       this.groupBoxOrientation.Size = new System.Drawing.Size(135, 97);
       this.groupBoxOrientation.TabIndex = 0;
       this.groupBoxOrientation.TabStop = false;
@@ -75,7 +75,7 @@
       // tbYaw
       // 
       this.tbYaw.Location = new System.Drawing.Point(56, 66);
-      this.tbYaw.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.tbYaw.Margin = new System.Windows.Forms.Padding(2);
       this.tbYaw.Name = "tbYaw";
       this.tbYaw.Size = new System.Drawing.Size(76, 20);
       this.tbYaw.TabIndex = 5;
@@ -83,7 +83,7 @@
       // tbPitch
       // 
       this.tbPitch.Location = new System.Drawing.Point(56, 41);
-      this.tbPitch.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.tbPitch.Margin = new System.Windows.Forms.Padding(2);
       this.tbPitch.Name = "tbPitch";
       this.tbPitch.Size = new System.Drawing.Size(76, 20);
       this.tbPitch.TabIndex = 4;
@@ -91,7 +91,7 @@
       // tbRoll
       // 
       this.tbRoll.Location = new System.Drawing.Point(56, 18);
-      this.tbRoll.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.tbRoll.Margin = new System.Windows.Forms.Padding(2);
       this.tbRoll.Name = "tbRoll";
       this.tbRoll.Size = new System.Drawing.Size(76, 20);
       this.tbRoll.TabIndex = 3;
@@ -136,10 +136,10 @@
       this.groupBoxServos.Controls.Add(this.label4);
       this.groupBoxServos.Controls.Add(this.label5);
       this.groupBoxServos.Location = new System.Drawing.Point(148, 10);
-      this.groupBoxServos.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.groupBoxServos.Margin = new System.Windows.Forms.Padding(2);
       this.groupBoxServos.Name = "groupBoxServos";
-      this.groupBoxServos.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-      this.groupBoxServos.Size = new System.Drawing.Size(522, 97);
+      this.groupBoxServos.Padding = new System.Windows.Forms.Padding(2);
+      this.groupBoxServos.Size = new System.Drawing.Size(627, 97);
       this.groupBoxServos.TabIndex = 1;
       this.groupBoxServos.TabStop = false;
       this.groupBoxServos.Text = "Servos";
@@ -148,8 +148,8 @@
       // 
       this.stabilizeCb.Anchor = System.Windows.Forms.AnchorStyles.Right;
       this.stabilizeCb.AutoSize = true;
-      this.stabilizeCb.Location = new System.Drawing.Point(452, 75);
-      this.stabilizeCb.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.stabilizeCb.Location = new System.Drawing.Point(557, 75);
+      this.stabilizeCb.Margin = new System.Windows.Forms.Padding(2);
       this.stabilizeCb.Name = "stabilizeCb";
       this.stabilizeCb.Size = new System.Drawing.Size(65, 17);
       this.stabilizeCb.TabIndex = 5;
@@ -164,11 +164,11 @@
       this.yawTrackBar.AutoSize = false;
       this.yawTrackBar.LargeChange = 100;
       this.yawTrackBar.Location = new System.Drawing.Point(38, 41);
-      this.yawTrackBar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.yawTrackBar.Margin = new System.Windows.Forms.Padding(2);
       this.yawTrackBar.Maximum = 8000;
       this.yawTrackBar.Minimum = 4000;
       this.yawTrackBar.Name = "yawTrackBar";
-      this.yawTrackBar.Size = new System.Drawing.Size(478, 29);
+      this.yawTrackBar.Size = new System.Drawing.Size(583, 29);
       this.yawTrackBar.SmallChange = 10;
       this.yawTrackBar.TabIndex = 4;
       this.yawTrackBar.TickFrequency = 100;
@@ -182,11 +182,11 @@
       this.pitchTrackBar.AutoSize = false;
       this.pitchTrackBar.LargeChange = 100;
       this.pitchTrackBar.Location = new System.Drawing.Point(39, 12);
-      this.pitchTrackBar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.pitchTrackBar.Margin = new System.Windows.Forms.Padding(2);
       this.pitchTrackBar.Maximum = 8000;
       this.pitchTrackBar.Minimum = 4000;
       this.pitchTrackBar.Name = "pitchTrackBar";
-      this.pitchTrackBar.Size = new System.Drawing.Size(478, 29);
+      this.pitchTrackBar.Size = new System.Drawing.Size(583, 29);
       this.pitchTrackBar.SmallChange = 10;
       this.pitchTrackBar.TabIndex = 3;
       this.pitchTrackBar.TickFrequency = 100;
@@ -220,17 +220,17 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.pictureBox.Location = new System.Drawing.Point(9, 111);
-      this.pictureBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.pictureBox.Margin = new System.Windows.Forms.Padding(2);
       this.pictureBox.Name = "pictureBox";
-      this.pictureBox.Size = new System.Drawing.Size(661, 422);
+      this.pictureBox.Size = new System.Drawing.Size(766, 614);
       this.pictureBox.TabIndex = 2;
       this.pictureBox.TabStop = false;
       // 
       // captureBn
       // 
       this.captureBn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.captureBn.Location = new System.Drawing.Point(585, 537);
-      this.captureBn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.captureBn.Location = new System.Drawing.Point(690, 729);
+      this.captureBn.Margin = new System.Windows.Forms.Padding(2);
       this.captureBn.Name = "captureBn";
       this.captureBn.Size = new System.Drawing.Size(84, 24);
       this.captureBn.TabIndex = 3;
@@ -241,8 +241,8 @@
       // ipTb
       // 
       this.ipTb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.ipTb.Location = new System.Drawing.Point(29, 540);
-      this.ipTb.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.ipTb.Location = new System.Drawing.Point(29, 732);
+      this.ipTb.Margin = new System.Windows.Forms.Padding(2);
       this.ipTb.Name = "ipTb";
       this.ipTb.Size = new System.Drawing.Size(152, 20);
       this.ipTb.TabIndex = 4;
@@ -251,7 +251,7 @@
       // 
       this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.label6.AutoSize = true;
-      this.label6.Location = new System.Drawing.Point(10, 543);
+      this.label6.Location = new System.Drawing.Point(10, 735);
       this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
       this.label6.Name = "label6";
       this.label6.Size = new System.Drawing.Size(17, 13);
@@ -261,8 +261,8 @@
       // connectBn
       // 
       this.connectBn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.connectBn.Location = new System.Drawing.Point(187, 537);
-      this.connectBn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.connectBn.Location = new System.Drawing.Point(187, 729);
+      this.connectBn.Margin = new System.Windows.Forms.Padding(2);
       this.connectBn.Name = "connectBn";
       this.connectBn.Size = new System.Drawing.Size(84, 24);
       this.connectBn.TabIndex = 6;
@@ -273,8 +273,8 @@
       // videoBn
       // 
       this.videoBn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.videoBn.Location = new System.Drawing.Point(497, 537);
-      this.videoBn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.videoBn.Location = new System.Drawing.Point(602, 729);
+      this.videoBn.Margin = new System.Windows.Forms.Padding(2);
       this.videoBn.Name = "videoBn";
       this.videoBn.Size = new System.Drawing.Size(84, 24);
       this.videoBn.TabIndex = 7;
@@ -285,7 +285,7 @@
       // saveImageButton
       // 
       this.saveImageButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.saveImageButton.Location = new System.Drawing.Point(409, 537);
+      this.saveImageButton.Location = new System.Drawing.Point(514, 729);
       this.saveImageButton.Margin = new System.Windows.Forms.Padding(2);
       this.saveImageButton.Name = "saveImageButton";
       this.saveImageButton.Size = new System.Drawing.Size(84, 24);
@@ -298,7 +298,7 @@
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(679, 570);
+      this.ClientSize = new System.Drawing.Size(784, 762);
       this.Controls.Add(this.saveImageButton);
       this.Controls.Add(this.videoBn);
       this.Controls.Add(this.connectBn);
@@ -308,7 +308,8 @@
       this.Controls.Add(this.pictureBox);
       this.Controls.Add(this.groupBoxServos);
       this.Controls.Add(this.groupBoxOrientation);
-      this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+      this.Margin = new System.Windows.Forms.Padding(2);
+      this.MinimumSize = new System.Drawing.Size(800, 800);
       this.Name = "Window";
       this.Text = "Client";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Window_FormClosing);

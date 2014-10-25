@@ -281,13 +281,6 @@ namespace SatelliteServer
       Ki = float.Parse(kiText.Text);
     }
 
-    private void pidCheckBox_CheckedChanged(object sender, EventArgs e)
-    {
-      //useCustomPid = customPidCheckBox.Checked;
-      kiText.Enabled = !customPidCheckBox.Checked;
-      kpText.Enabled = !customPidCheckBox.Checked;
-    }
-
     private void pitchTrackBar_Scroll(object sender, EventArgs e)
     {
       numericPitch.Value = pitchTrackBar.Value;
