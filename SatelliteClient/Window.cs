@@ -16,66 +16,76 @@ namespace SatelliteClient
 {
     public partial class Window : Form
     {
-        Bitmap image;
-        bool _bConnected;
-        System.Timers.Timer _captureTimer;
         System.Timers.Timer _updateTimer;
         ChannelFactory<SatelliteServer.ISatService> _scf;
         SatelliteServer.ISatService _satService;
+        private OrientationFetcher _orientation_fetcher;
+        private FrameFetcher _frame_fetcher;
 
+        /**
+         *
+         */
         public Window()
         {
             InitializeComponent();
-            _captureTimer = new System.Timers.Timer(250);
             _updateTimer = new System.Timers.Timer(50);
             _updateTimer.Elapsed += _updateTimer_Elapsed;
-            _captureTimer.Elapsed += _captureTimer_Elapsed;
-            _bConnected = false;
+            InitFactory("192.168.1.96"); // ip is fixed on the satellite to this one 
+            _satService = _scf.CreateChannel();
+            _orientation_fetcher = new OrientationFetcher(_satService);
+            _frame_fetcher = new FrameFetcher(_satService);
         }
 
-        void _captureTimer_Elapsed(object sender, ElapsedEventArgs e)
+        /**
+         * Initialize the channel factory
+         */ 
+        private void InitFactory(string ip) 
         {
-            _captureTimer.Enabled = false;
-            if (_bConnected)
-            {
-                this.Invoke(new Action(() =>
-                {
-                    captureBn.Enabled = false;
-                    byte[] buffer = _satService.Capture();
-                    Console.Write("Received image with " + buffer.Length + " bytes.");
-                    MemoryStream stream = new MemoryStream(buffer);
-                    pictureBox.Image = new Bitmap(stream);
-                    //image = (Bitmap)pictureBox.Image;
-                    captureBn.Enabled = true;
-                }));
-            }
-            _captureTimer.Enabled = true;
+            NetTcpBinding binding = new NetTcpBinding();
+            binding.MaxReceivedMessageSize = 20000000;
+            binding.MaxBufferPoolSize = 20000000;
+            binding.MaxBufferSize = 20000000;
+            binding.Security.Mode = SecurityMode.None;
+            _scf = new ChannelFactory<SatelliteServer.ISatService>(
+                        binding,
+                        "net.tcp://" + ip + ":8000");
         }
+
+        //void _captureTimer_Elapsed(object sender, ElapsedEventArgs e)
+        //{
+        //    _captureTimer.Enabled = false;
+        //    if (_bConnected)
+        //    {
+        //        this.Invoke(new Action(() =>
+        //        {
+        //            captureBn.Enabled = false;
+        //            byte[] buffer = _satService.Capture();
+        //            Console.Write("Received image with " + buffer.Length + " bytes.");
+        //            MemoryStream stream = new MemoryStream(buffer);
+        //            pictureBox.Image = new Bitmap(stream);
+        //            //image = (Bitmap)pictureBox.Image;
+        //            captureBn.Enabled = true;
+        //        }));
+        //    }
+        //    _captureTimer.Enabled = true;
+        //}
 
         void _updateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             _updateTimer.Enabled = false;
-            this.Invoke(new Action(() =>
-            {
-                if (_bConnected)
-                {
-                    double[] euler = _satService.GetEulerAngles();
-                    tbRoll.Text = euler[0].ToString();
-                    tbPitch.Text = euler[1].ToString();
-                    tbYaw.Text = euler[2].ToString();
+            Invoke(new Action(() => {
+                tbRoll.Text = _orientation_fetcher.GetRoll().ToString();
+                tbPitch.Text = _orientation_fetcher.GetPitch().ToString();
+                tbYaw.Text = _orientation_fetcher.GetYaw().ToString();
 
-                    pitchTrackBar.Value = _satService.GetServoPos(0);
-                    yawTrackBar.Value = _satService.GetServoPos(1);
-                }
+                pitchTrackBar.Value = _orientation_fetcher.GetServoPitch();
+                yawTrackBar.Value = _orientation_fetcher.GetServoYaw();
             }));
             _updateTimer.Enabled = true;
         }
 
         private void captureBn_Click(object sender, EventArgs e)
         {
-            _captureTimer.Enabled = false;
-            if (_bConnected)
-            {
                 captureBn.Enabled = false;
                 byte[] buffer = _satService.Capture();
                 Console.Write("Received image with " + buffer.Length + " bytes.");
@@ -86,96 +96,66 @@ namespace SatelliteClient
                   //pictureBox.Image.Save("c:\\picture.png", System.Drawing.Imaging.ImageFormat.Png);
                   captureBn.Enabled = true;
                 }
-            }
-            else
-            {
-                MessageBox.Show("Please connect to the server first.");
-            }
-        }
-
-        private void Window_Load(object sender, EventArgs e)
-        {
-            _updateTimer.Start();
-            ipTb.Text = Settings.Default["IP"].ToString();
+   
         }
 
         private void connectBn_Click(object sender, EventArgs e)
         {
-            Settings.Default["IP"] = ipTb.Text;
-            try
-            {
-                // initialize the client
-                NetTcpBinding binding = new NetTcpBinding();
-                binding.MaxReceivedMessageSize = 20000000;
-                binding.MaxBufferPoolSize = 20000000;
-                binding.MaxBufferSize = 20000000;
-                binding.Security.Mode = SecurityMode.None;
-                _scf = new ChannelFactory<SatelliteServer.ISatService>(
-                            binding,
-                            "net.tcp://" + ipTb.Text + ":8000");
-                //"net.tcp://192.168.1.137:8000");
 
-                _satService = _scf.CreateChannel();
-            }
-            catch (Exception ex)
-            {
-                connectBn.Enabled = true;
-                MessageBox.Show("Failed to connect to server: " + ex.Message);
-                _bConnected = false;
-                return;
-            }
+        }
 
-            _bConnected = true;
-            connectBn.Enabled = false;
+        private void disconnectBn_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Window_Load(object sender, EventArgs e)
+        {
+            _orientation_fetcher.Start();
+            _frame_fetcher.Start();
+            _updateTimer.Start();
         }
 
         private void Window_FormClosing(object sender, FormClosingEventArgs e)
         {
             _updateTimer.Stop();
-            Settings.Default.Save();
+            _frame_fetcher.Stop();
+            _updateTimer.Stop();
         }
 
         private void stabilizeCb_CheckedChanged(object sender, EventArgs e)
         {
-            if (_bConnected)
-            {
-                this.BeginInvoke(new Action(() =>
-                {
-                    _satService.SetStabilization(stabilizeCb.Checked);
-                }));
-            }
+                //this.BeginInvoke(new Action(() =>
+                //{
+                //    _satService.SetStabilization(stabilizeCb.Checked);
+                //}));
         }
 
         private void pitchTrackBar_Scroll(object sender, EventArgs e)
         {
-            if (_bConnected)
-            {
-                this.BeginInvoke(new Action(() =>
+                /*this.BeginInvoke(new Action(() =>
                 {
                     _satService.SetServoPos(0, pitchTrackBar.Value);
-                }));
-            }
+                }));*/
+            
         }
 
         private void yawTrackBar_Scroll(object sender, EventArgs e)
         {
-            if (_bConnected)
-            {
-                this.BeginInvoke(new Action(() =>
+                /*this.BeginInvoke(new Action(() =>
                 {
                     _satService.SetServoPos(1, yawTrackBar.Value);
-                }));
-            }
+                }));*/
+            
         }
 
         private void videoBn_Click(object sender, EventArgs e)
         {
-            _captureTimer.Enabled = true;
         }
 
         private void saveImageButton_Click(object sender, EventArgs e)
         {
-          image.Save("c:\\picture.png", System.Drawing.Imaging.ImageFormat.Png);
+          //image.Save("c:\\picture.png", System.Drawing.Imaging.ImageFormat.Png);
         }
     }
 }
