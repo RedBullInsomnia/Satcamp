@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Timers.Timer;
 using System.Collections.Concurrent;
 using System.Drawing;
 using System.IO;
@@ -23,6 +22,7 @@ namespace SatelliteClient
         public FrameFetcher(SatelliteServer.ISatService service)
         {
             _thread = new Thread(new ThreadStart(work));
+            _frameQueue = new ConcurrentQueue<Bitmap>();
             _go = true;
             _satService = service;
         }
@@ -50,11 +50,15 @@ namespace SatelliteClient
          */
         private void work()
         {
-            while (_go && IsAlive())
-            {
-                byte[] buffer = _satService.Capture();
-                _frameQueue.Enqueue(new Bitmap(new MemoryStream(buffer)));
-                Console.Write("Received image with " + buffer.Length + " bytes.");
+            try {
+                while (_go && IsAlive())
+                {
+                    byte[] buffer = _satService.Capture();
+                    _frameQueue.Enqueue(new Bitmap(new MemoryStream(buffer)));
+                    Console.Write("Received image with " + buffer.Length + " bytes.");
+                }
+            } catch (Exception e) {
+                Console.Error.Write("Exception in Orientation Fetcher : {0}\n", e.Message);
             }
         }
     }
