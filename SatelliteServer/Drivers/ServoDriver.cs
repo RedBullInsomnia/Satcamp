@@ -37,7 +37,7 @@ namespace SatelliteServer
                 Usc device = new Usc(dli); // Connect to the device.
                 return device;             // Return the device.
             }
-            throw new Exception("Could not find servo driver device.  Make sure it is plugged in to USB");
+            throw new Exception("Could not find servo driver device. Make sure it is plugged in to USB");
         }
 
         private Usc _device;
