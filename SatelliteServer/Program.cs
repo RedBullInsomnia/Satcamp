@@ -14,14 +14,11 @@ namespace SatelliteServer
         [STAThread]
         static void Main()
         {
-            try
-            {
+            try {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Window());
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 string message = "";
                 Exception ex = e;
                 while (ex != null)
