@@ -22,7 +22,8 @@ namespace SatelliteServer
         /// <param name="value">Target, in units of quarter microseconds.  For typical servos, 6000 is neutral and the acceptable range is 4000-8000.</param>
         public void SetServo(Byte channel, UInt16 value)
         {
-            _device.setTarget(channel, value);
+            if(_device != null)
+                _device.setTarget(channel, value);
         }
 
         public Usc Connect()
@@ -40,6 +41,20 @@ namespace SatelliteServer
             throw new Exception("Could not find servo driver device. Make sure it is plugged in to USB");
         }
 
-        private Usc _device;
+        //
+        // Disconnect the servos
+        //
+        public void Dispose()
+        {
+            if (_device == null)
+                return;
+            
+            try { _device.Dispose(); } 
+            catch (Exception e) { } 
+            finally { _device = null; }
+
+        }
+
+        private Usc _device = null;
     }
 }

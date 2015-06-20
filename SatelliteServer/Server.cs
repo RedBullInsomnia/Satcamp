@@ -10,7 +10,7 @@ using System.Net.Sockets;
 
 namespace SatelliteServer
 {
-    class Server : BaseThread
+    public class Server : BaseThread
     {
         private SatService _service; /** The service object handling the connection */
         private ServiceHost _host; /** Host object representing the host of the service */
@@ -86,7 +86,7 @@ namespace SatelliteServer
         /**
          * 
          */
-        protected void work()
+        protected override void work()
         {
             while (_go && IsAlive())
             {
@@ -105,6 +105,23 @@ namespace SatelliteServer
                     _servoDriver.SetServo(YAW_SERVO_ADDR, (ushort)_service._servoPos[1]);
                 }
             }
+
+            cleanRessources();
+        }
+
+        /**
+         * Clean the ressources associated with the object
+         */
+        private void cleanRessources()
+        {
+            if (_cameraDriver != null)
+            {
+                _cameraDriver.StopVideo();
+                _cameraDriver.ShutDown();
+            }
+
+            if(_servoDriver != null)
+                _servoDriver.Dispose();
         }
     }
 }
