@@ -117,12 +117,11 @@ namespace SatelliteServer
          */
         private void enqueueFrame(Bitmap frame)
         {
-            
             /**
              * A little dirty : consider that if the limit is reached, the fact that frames are stored
              * introduce a unacceptable delay so clear the queue
              */
-            lock (this) { 
+           /* lock (this) { 
                 if (_captureQueue.Count() >= _maxFrameInQueue)
                 {
                     while (_captureQueue.Count() > 0)
@@ -131,7 +130,7 @@ namespace SatelliteServer
                         _captureQueue.TryTake(out item);
                     }
                 }
-            }  
+            }  */
 
             _captureQueue.Add(frame);
         }
@@ -166,7 +165,7 @@ namespace SatelliteServer
         protected override void work()
         {
             _logger.log("Server main loop has started");
-            //ulong logger_freq = 0;
+            ulong logger_freq = 0;
             while (_go && IsAlive())
             {
                 // Transfer servo modification order to the servos 
@@ -184,8 +183,8 @@ namespace SatelliteServer
                     _servoDriver.SetServo(YAW_SERVO_ADDR, (ushort)_service._servoPos[1]);
                 }
 
-                //if ((++logger_freq % 100000000) != 0)
-                //    _logger.log("Server running (frames stored : " + _captureQueue.Count() + ")");
+                /*if ((++logger_freq % 500000000) != 0)
+                    _logger.log("Server running (frames stored : " + _captureQueue.Count() + ")");*/
             }
             _logger.log("Server main loop has ended");
             cleanRessources();
