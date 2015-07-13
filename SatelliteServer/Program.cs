@@ -15,12 +15,9 @@ namespace SatelliteServer
         static void Main()
         {
             try {
-                //Application.EnableVisualStyles();
-                //Application.SetCompatibleTextRenderingDefault(false);
-                //Application.Run(new Window());
-                Server s = new Server();
-                s.Start();
-                s.Join();
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new Window());
             } catch (Exception e) {
                 string message = "";
                 Exception ex = e;

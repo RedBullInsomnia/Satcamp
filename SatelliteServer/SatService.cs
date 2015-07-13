@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.ServiceModel;
 using System.Drawing;
 using System.Threading;
 using System.IO;
+using System.Drawing.Imaging;
+using System.Collections.Concurrent;
 using System.Drawing.Imaging;
 
 namespace SatelliteServer
@@ -14,11 +15,25 @@ namespace SatelliteServer
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     class SatService : ISatService
     {
-        public SatService(CameraDriver camDriver)
+        private BlockingCollection<Bitmap> _captureQueue; /** queue containing captures frame */
+        
+        /** 
+         * Image compression components
+         */
+        private ImageCodecInfo _jpegEncoder;
+        private EncoderParameters _jpegEncoderParameters;
+
+        public double[] _eulerAngles;
+        public int[] _servoPos;
+        public bool[] _servoChanged;
+        public bool _bStabilizationChanged;
+        public bool _bStabilizationActive;
+
+        public SatService(BlockingCollection<Bitmap> captureQueue)
         {
-            _camEvent = new AutoResetEvent(false);
-            _camDriver = camDriver;
-            _camDriver.CameraCapture += _camDriver_CameraCapture;
+            initJpegEncoder();
+
+            _captureQueue = captureQueue;
 
             _bStabilizationChanged = false;
 
@@ -32,8 +47,16 @@ namespace SatelliteServer
             _eulerAngles = new double[3];
         }
 
+        private void initJpegEncoder()
+        {
+            _jpegEncoder = ImageCodecInfo.GetImageEncoders().Single(x => x.FormatDescription == "JPEG");
+            _jpegEncoderParameters = new EncoderParameters(1);
+            _jpegEncoderParameters.Param[0] = new EncoderParameter(Encoder.Quality, 50L);
+        }
+
         public void SetStabilization(bool active)
         {
+            Logger.instance().log("Stabilization set");
             _bStabilizationActive = active;
             _bStabilizationChanged = true;
         }
@@ -50,6 +73,7 @@ namespace SatelliteServer
 
         public void SetServoPos(int channel, int val)
         {
+            Logger.instance().log("Servo on channel '" + channel + "' set to position " + val);
             _servoPos[channel] = val;
             _servoChanged[channel] = true;
         }
@@ -59,66 +83,20 @@ namespace SatelliteServer
             return _servoPos[channel];
         }
 
-        void _camDriver_CameraCapture(object sender, Bitmap b)
-        {
-            if (_camImage == null)
-            {
-                _camImage = new Bitmap(b.Width,b.Height);
-            }
-            Graphics g = Graphics.FromImage(_camImage);
-            g.DrawImage(b, new Point(0, 0));
-            g.Dispose();
-            _camEvent.Set();
-        }
-
         public string Ping(string name)
         {
-            Console.WriteLine("SERVER - Processing Ping('{0}')", name);
+            Logger.instance().log("Processing Ping(" + name + ")");
             return "Hello, " + name;
         }
 
         public byte[] Capture()
         {
-            if (_camDriver.IsVideoStarted() == false)
-            {
-                _camDriver.StartVideo();
-            }
-            // wait for the camera to capture something
-            //if (_camDriver.Capture())
-            //{
-            _camEvent.WaitOne();
+            Bitmap captured = _captureQueue.Take(); // blocking
 
-            if (_captureStream == null)
-            {
-                _captureStream = new MemoryStream();
-            }
-
-            ImageCodecInfo jpgEncoder = ImageCodecInfo.GetImageEncoders().Single(x => x.FormatDescription == "JPEG");
-            System.Drawing.Imaging.Encoder encoder2 = System.Drawing.Imaging.Encoder.Quality;
-            EncoderParameters parameters = new System.Drawing.Imaging.EncoderParameters(1);
-            EncoderParameter parameter = new EncoderParameter(encoder2, 50L);
-            parameters.Param[0] = parameter;
-
-            
-            _captureStream.Seek(0, SeekOrigin.Begin);
-            _camImage.Save(_captureStream, jpgEncoder, parameters);
-            //_camImage.Save(_captureStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-            byte[] buffer = new byte[_captureStream.Length];
-            Console.WriteLine("Sending image with size " + buffer.Length);
-            //_captureStream.Read(buffer,0,(int)_captureStream.Length);
-            buffer = _captureStream.ToArray();
-
-            return buffer;
+            MemoryStream stream = new MemoryStream();
+            stream.Seek(0, SeekOrigin.Begin);
+            captured.Save(stream, _jpegEncoder, _jpegEncoderParameters);
+            return stream.ToArray();
         }
-
-        public double[] _eulerAngles;
-        public int[] _servoPos;
-        public bool[] _servoChanged;
-        public bool _bStabilizationChanged;
-        public  bool _bStabilizationActive;
-        MemoryStream _captureStream;
-        Bitmap _camImage;
-        AutoResetEvent _camEvent;
-        CameraDriver _camDriver;        
     }
 }
