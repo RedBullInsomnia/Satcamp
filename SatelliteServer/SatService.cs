@@ -83,9 +83,9 @@ namespace SatelliteServer
             return _servoPos[channel];
         }
 
-        public string Ping(string name)
+        public string NamedPing(string name)
         {
-            Logger.instance().log("Processing Ping(" + name + ")");
+            Logger.instance().log("Processing named ping from '" + name + "')");
             return "Hello, " + name;
         }
 
@@ -97,6 +97,12 @@ namespace SatelliteServer
             stream.Seek(0, SeekOrigin.Begin);
             captured.Save(stream, _jpegEncoder, _jpegEncoderParameters);
             return stream.ToArray();
+        }
+
+        public bool Ping() 
+        {
+            Logger.instance().log("Processing unamed ping");
+            return true;
         }
     }
 }

@@ -24,6 +24,12 @@ namespace SatelliteServer
         int GetServoPos(int channel);
 
         [OperationContract]
+        string NamedPing(string name);
+
+        [OperationContract]
+        bool Ping();
+
+        [OperationContract]
         double[] GetEulerAngles();
 
         [OperationContract]
