@@ -28,7 +28,8 @@ namespace SatelliteServer
 
     [System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.Demand, Name = "FullTrust")]
     protected override void WndProc(ref Message m)
-    {   
+    {
+        Logger.instance().log("Message from operating system");
         // Listen for operating system messages
         switch (m.Msg)
         {
