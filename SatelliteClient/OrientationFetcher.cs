@@ -6,13 +6,11 @@ using System.Threading;
 
 namespace SatelliteClient
 {
-    class OrientationFetcher 
+    class OrientationFetcher : SatelliteServer.BaseThread
     {
-        private Thread _thread; /** Thread that fetches the data */
         private double _roll, _pitch, _yaw; /** Current angles */
         private int _goal_pitch, _goal_yaw; /** Objective servo angles */
         private int _servo_pitch, _servo_yaw; /** Actual servo angles */
-        private bool _go; /** True for the thread to go on */
         private bool _stabilize_mode; /** True for the stabilize mode 
                                        *  In this mode, the goal pitch and goal yaw are inactive
                                        */
@@ -21,7 +19,6 @@ namespace SatelliteClient
 
         public OrientationFetcher(SatelliteServer.ISatService service)
         {
-            _thread = new Thread(new ThreadStart(work));
             _satService = service;
             _goal_pitch = _goal_yaw = 4000;
             _servo_pitch = _servo_yaw = 4000;
@@ -29,11 +26,6 @@ namespace SatelliteClient
             _stabilize_mode = false;
             _go = true;
         }
-
-        public void Stop() { _go = false; }
-        public void Start() { _thread.Start(); }
-        public void Join() { _thread.Join(); }
-        public bool IsAlive() { return _thread.IsAlive; }
 
         // Angle getters and setters
         public double GetPitch() { lock (this) { return _pitch; } }
@@ -54,7 +46,7 @@ namespace SatelliteClient
         /**
          * Update the pitch, yaw and roll and send angle modification if necessary
          */
-        private void work()
+        protected override void work()
         {
             try {
                 while (_go && IsAlive())
