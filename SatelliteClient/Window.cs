@@ -111,16 +111,18 @@ namespace SatelliteClient
 
         private void Window_Load(object sender, EventArgs e)
         {
-            _orientation_fetcher.Start();
-            _frame_fetcher.Start();
-            _updateTimer.Start();
+            //_orientation_fetcher.Start();
+            //_frame_fetcher.Start();
+            //_updateTimer.Start();
+            Console.WriteLine("Ping 1 : " + _satService.Ping());
+            Console.WriteLine("Ping 2 : " + _satService.NamedPing("Romain"));
         }
 
         private void Window_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _updateTimer.Stop();
-            _frame_fetcher.Stop();
-            _updateTimer.Stop();
+            //_updateTimer.Stop();
+            //_frame_fetcher.Stop();
+            //_updateTimer.Stop();
         }
 
         private void stabilizeCb_CheckedChanged(object sender, EventArgs e)
