@@ -21,7 +21,7 @@ namespace SatelliteServer
         private ServoDriver _servoDriver; /** The driver of the servo */
         private Um6Driver _um6Driver; /** Driver of the sensors */
 
-        private long _maxFrameInQueue; /** Maximum number of frame in the queue : -1 for no max, > 0 otherwise */
+        private Bitmap _trashBitmap; /** Bitmap in which will be discarded old image */
         private BlockingCollection<Bitmap> _captureQueue; /** Queue in which will be stored the consecutive frames received from the camera */
         
         private PictureBox _pBox; /** Picture box on which the image must be displayed */
@@ -51,25 +51,14 @@ namespace SatelliteServer
         {
             this._pBox = pBox;
             this._printOnPbox = printOnPbox;
+            this._trashBitmap = null;
             this._captureQueue = new BlockingCollection<Bitmap>();
-            this._maxFrameInQueue = this._captureQueue.BoundedCapacity;
             this._logger = Logger.instance();
 
             initCameraDriver((int) hWind, (int) pBox.Handle.ToInt64());
             initSensors();
             initServos();
             initService();
-        }
-
-        /**
-         * Set the limit number of frames that can be stored internally
-         * If the number of frame stored exceeds this value, the oldest frame is discarded
-         * Must be greater than 1 for stability reason
-         */
-        public void setFrameNumberLimit(long newMax)
-        {
-            if(newMax > 1) 
-               _maxFrameInQueue = newMax;
         }
 
         /**
@@ -117,21 +106,16 @@ namespace SatelliteServer
          */
         private void enqueueFrame(Bitmap frame)
         {
-            /**
-             * A little dirty : consider that if the limit is reached, the fact that frames are stored
-             * introduce a unacceptable delay so clear the queue
-             */
-           /* lock (this) { 
-                if (_captureQueue.Count() >= _maxFrameInQueue)
-                {
-                    while (_captureQueue.Count() > 0)
-                    {
-                        Bitmap item;
-                        _captureQueue.TryTake(out item);
-                    }
-                }
-            }  */
+            if (this._trashBitmap == null)
+            {
+                this._trashBitmap = (Bitmap) frame.Clone(); // copy the first frame to initialize the thrash bitmap
+            }
 
+            /**
+             * Store at most one image (the last one) in the queue so that there is no latency due to queueing
+             * The image that is stored is extracted in the trash field
+             */
+            _captureQueue.TryTake(out _trashBitmap);
             _captureQueue.Add(frame);
         }
 
@@ -142,7 +126,7 @@ namespace SatelliteServer
         {
             _um6Driver = new Um6Driver(SERIAL_PORT_NAME, SERIAL_PORT_BAUD_RATE);
             _um6Driver.Init();
-            _logger.log("Sensors driver correctly initialized");
+            _logger.log("Sensors driver successfully initialized");
         }
 
         /**
@@ -151,7 +135,7 @@ namespace SatelliteServer
         private void initServos()
         {
             _servoDriver = new ServoDriver();
-            _logger.log("Servos driver correctly initialized");
+            _logger.log("Servos driver successfully initialized");
         }
 
         public void passMessage(ref Message m)
@@ -165,27 +149,29 @@ namespace SatelliteServer
         protected override void work()
         {
             _logger.log("Server main loop has started");
-            ulong logger_freq = 0;
+            _cameraDriver.StartVideo();
+
             while (_go && IsAlive())
             {
+                // fetch euler angles
+                _service._eulerAngles = new double[3] { _um6Driver.Angles[0], _um6Driver.Angles[1], _um6Driver.Angles[2] };
+
                 // Transfer servo modification order to the servos 
                 // do it with Pitch
-                if (_service._servoChanged[0])
+                if (_service._servoChanged[PITCH_SERVO_ADDR])
                 {
-                    _service._servoChanged[0] = false;
-                    _servoDriver.SetServo(PITCH_SERVO_ADDR, (ushort)_service._servoPos[0]);
+                    _service._servoChanged[PITCH_SERVO_ADDR] = false;
+                    _servoDriver.SetServo(PITCH_SERVO_ADDR, (ushort)_service._servoPos[PITCH_SERVO_ADDR]);
                 }
 
                 // do it with Yaw
-                if (_service._servoChanged[1])
+                if (_service._servoChanged[YAW_SERVO_ADDR])
                 {
-                    _service._servoChanged[1] = false;
-                    _servoDriver.SetServo(YAW_SERVO_ADDR, (ushort)_service._servoPos[1]);
+                    _service._servoChanged[YAW_SERVO_ADDR] = false;
+                    _servoDriver.SetServo(YAW_SERVO_ADDR, (ushort)_service._servoPos[YAW_SERVO_ADDR]);
                 }
-
-                /*if ((++logger_freq % 500000000) != 0)
-                    _logger.log("Server running (frames stored : " + _captureQueue.Count() + ")");*/
             }
+
             _logger.log("Server main loop has ended");
             cleanRessources();
         }

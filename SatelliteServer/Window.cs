@@ -22,14 +22,12 @@ namespace SatelliteServer
     public Window()
     {
         InitializeComponent();
-        _server = new Server(this.Handle.ToInt64(), pictureBox, false); // ideally, set to false in production to avoid lost of time due to image copying
-        _server.setFrameNumberLimit(100);
+        _server = new Server(this.Handle.ToInt64(), pictureBox, true); // ideally, set to false in production to avoid lost of time due to image copying
     }
 
     [System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.Demand, Name = "FullTrust")]
     protected override void WndProc(ref Message m)
     {
-        Logger.instance().log("Message from operating system");
         // Listen for operating system messages
         switch (m.Msg)
         {

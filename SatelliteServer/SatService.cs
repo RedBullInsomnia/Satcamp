@@ -91,8 +91,10 @@ namespace SatelliteServer
 
         public byte[] Capture()
         {
+            Logger.instance().log("Capture request");
             Bitmap captured = _captureQueue.Take(); // blocking
-
+            Logger.instance().log("Process image");
+            
             MemoryStream stream = new MemoryStream();
             stream.Seek(0, SeekOrigin.Begin);
             captured.Save(stream, _jpegEncoder, _jpegEncoderParameters);

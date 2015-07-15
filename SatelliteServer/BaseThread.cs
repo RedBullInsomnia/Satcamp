@@ -17,11 +17,15 @@ namespace SatelliteServer
         public BaseThread()
         {
             _thread = new Thread(new ThreadStart(work));
-            _go = true;
+        }
+
+        public void Start() 
+        { 
+            _go = true; 
+            _thread.Start(); 
         }
 
         public void Stop() { _go = false; }
-        public void Start() { _thread.Start(); }
         public void Join() { _thread.Join(); }
         public bool IsAlive() { return _thread.IsAlive; }
 
