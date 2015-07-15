@@ -105,26 +105,32 @@ namespace SatelliteClient
 
         private void connectBn_Click(object sender, EventArgs e)
         {
-            // try to ping the server
-            try {
-                _satService.Ping();
-            } catch (EndpointNotFoundException ex) {
-                MessageBox.Show("Error: impossible to ping the server");
-                Console.Error.WriteLine("Error: impossible to ping the server");
-                return;
-            }
+            Invoke(new Action(() => {
+                // try to ping the server
+                try {
+                    _satService.Ping();
+                } catch (EndpointNotFoundException ex) {
+                    MessageBox.Show("Error: impossible to ping the server");
+                    Console.Error.WriteLine("Error: impossible to ping the server");
+                    return;
+                }
 
-            _orientation_fetcher.Start(); 
-            //_frame_fetcher.Start();
+                _orientation_fetcher.Start(); 
+                //_frame_fetcher.Start();
+              
+                _updateTimer.Enabled = true;
 
-            // update position of the cursors on the track bar 
-            Invoke(new Action(() =>
-            {
+                /*for (int i = 0; i < 5; ++i)
+                {
+                    Console.WriteLine("Get frame " + (i + 1));
+                    pictureBox.Image = new Bitmap(new MemoryStream(_satService.Capture()));
+                }*/
+
+                // update position of the cursors on the track bar 
                 pitchTrackBar.Value = _orientation_fetcher.GetServoPitch();
                 yawTrackBar.Value = _orientation_fetcher.GetServoYaw();
             }));
-
-            _updateTimer.Enabled = true;
+            
         }
 
         private void disconnectBn_Click(object sender, EventArgs e)
@@ -163,14 +169,11 @@ namespace SatelliteClient
 
         private void Window_Load(object sender, EventArgs e)
         {
-            //_updateTimer.Start();
         }
 
         private void Window_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //_updateTimer.Stop();
-            //_frame_fetcher.Stop();
-            //_updateTimer.Stop();
+            disconnect();
         }
 
         private void stabilizeCb_CheckedChanged(object sender, EventArgs e)
@@ -199,6 +202,7 @@ namespace SatelliteClient
 
         private void videoBn_Click(object sender, EventArgs e)
         {
+
         }
 
         private void saveImageButton_Click(object sender, EventArgs e)
