@@ -47,6 +47,9 @@
             this.videoBn = new System.Windows.Forms.Button();
             this.saveImageButton = new System.Windows.Forms.Button();
             this.disconnectBn = new System.Windows.Forms.Button();
+            this.servoPitch = new System.Windows.Forms.TextBox();
+            this.servoYaw = new System.Windows.Forms.TextBox();
+            this.servoPos = new System.Windows.Forms.Label();
             this.groupBoxOrientation.SuspendLayout();
             this.groupBoxServos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.yawTrackBar)).BeginInit();
@@ -81,7 +84,7 @@
             // 
             // tbPitch
             // 
-            this.tbPitch.Location = new System.Drawing.Point(56, 41);
+            this.tbPitch.Location = new System.Drawing.Point(56, 42);
             this.tbPitch.Margin = new System.Windows.Forms.Padding(2);
             this.tbPitch.Name = "tbPitch";
             this.tbPitch.Size = new System.Drawing.Size(76, 20);
@@ -129,6 +132,9 @@
             // 
             this.groupBoxServos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxServos.Controls.Add(this.servoPos);
+            this.groupBoxServos.Controls.Add(this.servoYaw);
+            this.groupBoxServos.Controls.Add(this.servoPitch);
             this.groupBoxServos.Controls.Add(this.stabilizeCb);
             this.groupBoxServos.Controls.Add(this.yawTrackBar);
             this.groupBoxServos.Controls.Add(this.pitchTrackBar);
@@ -147,7 +153,7 @@
             // 
             this.stabilizeCb.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.stabilizeCb.AutoSize = true;
-            this.stabilizeCb.Location = new System.Drawing.Point(452, 75);
+            this.stabilizeCb.Location = new System.Drawing.Point(10, 14);
             this.stabilizeCb.Margin = new System.Windows.Forms.Padding(2);
             this.stabilizeCb.Name = "stabilizeCb";
             this.stabilizeCb.Size = new System.Drawing.Size(65, 17);
@@ -162,12 +168,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.yawTrackBar.AutoSize = false;
             this.yawTrackBar.LargeChange = 100;
-            this.yawTrackBar.Location = new System.Drawing.Point(38, 41);
+            this.yawTrackBar.Location = new System.Drawing.Point(37, 64);
             this.yawTrackBar.Margin = new System.Windows.Forms.Padding(2);
             this.yawTrackBar.Maximum = 8000;
             this.yawTrackBar.Minimum = 4000;
             this.yawTrackBar.Name = "yawTrackBar";
-            this.yawTrackBar.Size = new System.Drawing.Size(478, 29);
+            this.yawTrackBar.Size = new System.Drawing.Size(395, 29);
             this.yawTrackBar.SmallChange = 10;
             this.yawTrackBar.TabIndex = 4;
             this.yawTrackBar.TickFrequency = 100;
@@ -180,12 +186,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pitchTrackBar.AutoSize = false;
             this.pitchTrackBar.LargeChange = 100;
-            this.pitchTrackBar.Location = new System.Drawing.Point(39, 12);
+            this.pitchTrackBar.Location = new System.Drawing.Point(37, 35);
             this.pitchTrackBar.Margin = new System.Windows.Forms.Padding(2);
             this.pitchTrackBar.Maximum = 8000;
             this.pitchTrackBar.Minimum = 4000;
             this.pitchTrackBar.Name = "pitchTrackBar";
-            this.pitchTrackBar.Size = new System.Drawing.Size(478, 29);
+            this.pitchTrackBar.Size = new System.Drawing.Size(395, 29);
             this.pitchTrackBar.SmallChange = 10;
             this.pitchTrackBar.TabIndex = 3;
             this.pitchTrackBar.TickFrequency = 100;
@@ -195,7 +201,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(4, 44);
+            this.label4.Location = new System.Drawing.Point(7, 69);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(28, 13);
@@ -205,7 +211,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(4, 20);
+            this.label5.Location = new System.Drawing.Point(4, 42);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(31, 13);
@@ -285,6 +291,31 @@
             this.disconnectBn.UseVisualStyleBackColor = true;
             this.disconnectBn.Click += new System.EventHandler(this.disconnectBn_Click);
             // 
+            // servoPitch
+            // 
+            this.servoPitch.Location = new System.Drawing.Point(437, 35);
+            this.servoPitch.Name = "servoPitch";
+            this.servoPitch.Size = new System.Drawing.Size(79, 20);
+            this.servoPitch.TabIndex = 6;
+            this.servoPitch.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // servoYaw
+            // 
+            this.servoYaw.Location = new System.Drawing.Point(437, 68);
+            this.servoYaw.Name = "servoYaw";
+            this.servoYaw.Size = new System.Drawing.Size(79, 20);
+            this.servoYaw.TabIndex = 7;
+            this.servoYaw.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // servoPos
+            // 
+            this.servoPos.AutoSize = true;
+            this.servoPos.Location = new System.Drawing.Point(437, 16);
+            this.servoPos.Name = "servoPos";
+            this.servoPos.Size = new System.Drawing.Size(37, 13);
+            this.servoPos.TabIndex = 8;
+            this.servoPos.Text = "Actual";
+            // 
             // Window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -335,6 +366,9 @@
         private System.Windows.Forms.Button videoBn;
         private System.Windows.Forms.Button saveImageButton;
         private System.Windows.Forms.Button disconnectBn;
+        private System.Windows.Forms.Label servoPos;
+        private System.Windows.Forms.TextBox servoYaw;
+        private System.Windows.Forms.TextBox servoPitch;
 
     }
 }

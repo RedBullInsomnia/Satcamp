@@ -8,33 +8,37 @@ namespace SatelliteClient
 {
     class OrientationFetcher : SatelliteServer.BaseThread
     {
-        private double _roll, _pitch, _yaw; /** Current angles */
+        private int DEFAULT_SERVO_POS = 4000;
         private int _goal_pitch, _goal_yaw; /** Objective servo angles */
-        private int _servo_pitch, _servo_yaw; /** Actual servo angles */
         private bool _stabilize_mode; /** True for the stabilize mode 
-                                       *  In this mode, the goal pitch and goal yaw are inactive
-                                       */
+                                       *  In this mode, the goal pitch and goal yaw are inactive */
+        private MovingAverageDouble _roll, _pitch, _yaw; /** Euler angles as moving averages */
+        private MovingAverageInt _servoPitch, _servoYaw; /** Servo angles as moving averages */
+        private const int MOVING_AVERAGE_WINDOW = 10; 
+
         private SatelliteServer.ISatService _satService; /** Operation contract service */
         private const double EQUAL_THRESHOLD = 0.001;
 
         public OrientationFetcher(SatelliteServer.ISatService service)
         {
             _satService = service;
-            _goal_pitch = _goal_yaw = 4000;
-            _servo_pitch = _servo_yaw = 4000;
-            _roll = _pitch = _yaw = 0.0;
+            _goal_pitch = _goal_yaw = DEFAULT_SERVO_POS;
+            _servoPitch = new MovingAverageInt(MOVING_AVERAGE_WINDOW, DEFAULT_SERVO_POS);
+            _servoYaw = new MovingAverageInt(MOVING_AVERAGE_WINDOW, DEFAULT_SERVO_POS);
+            _roll = new MovingAverageDouble(MOVING_AVERAGE_WINDOW);
+            _pitch = new MovingAverageDouble(MOVING_AVERAGE_WINDOW);
+            _yaw = new MovingAverageDouble(MOVING_AVERAGE_WINDOW);
             _stabilize_mode = false;
-            _go = true;
         }
 
         // Angle getters and setters
-        public double GetPitch() { lock (this) { return _pitch; } }
-        public double GetYaw() { lock (this) { return _yaw; } }
-        public double GetRoll() { lock (this) { return _roll; } }
+        public double GetPitch() { lock (this) { return _pitch.get(); } }
+        public double GetYaw() { lock (this) { return _yaw.get(); } }
+        public double GetRoll() { lock (this) { return _roll.get(); } }
 
         // Servo angles setters and getters
-        public int GetServoPitch() { return (_stabilize_mode ? _servo_pitch : _goal_pitch); }
-        public int GetServoYaw() { return (_stabilize_mode ? _servo_yaw : _goal_yaw); }
+        public int GetServoPitch() { return _servoPitch.get(); }
+        public int GetServoYaw() { return _servoYaw.get(); }
 
         public void SetServoPitch(int goal_pitch) { _goal_pitch = goal_pitch; }
         public void SetServoYaw(int goal_yaw) { _goal_yaw = goal_yaw; }
@@ -56,20 +60,20 @@ namespace SatelliteClient
 
                     lock (this)
                     {
-                        _roll = euler[0];
-                        _pitch = euler[1];
-                        _yaw = euler[2];
+                        _roll.push(euler[0]);
+                        _pitch.push(euler[1]);
+                        _yaw.push(euler[2]);
                     }
 
                     // update servo angles         
-                    _servo_pitch = _satService.GetServoPos(0);
-                    _servo_yaw = _satService.GetServoPos(1);
+                    _servoPitch.push(_satService.GetServoPos(0));
+                    _servoYaw.push(_satService.GetServoPos(1));
 
                     // if servo angles invalid : send request for changing them
-                    if (!_stabilize_mode && Math.Abs(_servo_pitch - _goal_pitch) > EQUAL_THRESHOLD)
+                    if (Math.Abs(_servoPitch.getLast() - _goal_pitch) > EQUAL_THRESHOLD)
                         _satService.SetServoPos(0, _goal_pitch);
 
-                    if (!_stabilize_mode && Math.Abs(_servo_yaw - _goal_yaw) > EQUAL_THRESHOLD)
+                    if (Math.Abs(_servoYaw.getLast() - _goal_yaw) > EQUAL_THRESHOLD)
                         _satService.SetServoPos(1, _goal_yaw);
                 }
             } catch(Exception e) {
