@@ -21,6 +21,7 @@ namespace SatelliteClient
         SatelliteServer.ISatService _satService;
         private OrientationFetcher _orientation_fetcher;
         private FrameFetcher _frame_fetcher;
+        private const string SERVICE_IP = "192.168.1.96";
 
         /**
          *
@@ -30,17 +31,16 @@ namespace SatelliteClient
             InitializeComponent();
             _updateTimer = new System.Timers.Timer(50);
             _updateTimer.Elapsed += _updateTimer_Elapsed;
-            InitFactory("192.168.1.96"); // ip is fixed on the satellite to this one 
-            _satService = _scf.CreateChannel();
+            serviceConnect();
             _orientation_fetcher = new OrientationFetcher(_satService);
             _frame_fetcher = new FrameFetcher(_satService, pictureBox);
         }
 
-        /**
-         * Initialize the channel factory
-         */ 
-        private void InitFactory(string ip) 
+        private void serviceConnect()
         {
+            if (_scf != null)
+                _scf.Close();
+
             NetTcpBinding binding = new NetTcpBinding();
             binding.MaxReceivedMessageSize = 20000000;
             binding.MaxBufferPoolSize = 20000000;
@@ -49,28 +49,10 @@ namespace SatelliteClient
             Console.WriteLine("Init sat service");
             _scf = new ChannelFactory<SatelliteServer.ISatService>(
                         binding,
-                        "net.tcp://" + ip + ":8000");
+                        "net.tcp://" + SERVICE_IP + ":8000");
+            _satService = _scf.CreateChannel();
             Console.WriteLine("Sat service ok");
         }
-
-        //void _captureTimer_Elapsed(object sender, ElapsedEventArgs e)
-        //{
-        //    _captureTimer.Enabled = false;
-        //    if (_bConnected)
-        //    {
-        //        this.Invoke(new Action(() =>
-        //        {
-        //            captureBn.Enabled = false;
-        //            byte[] buffer = _satService.Capture();
-        //            Console.Write("Received image with " + buffer.Length + " bytes.");
-        //            MemoryStream stream = new MemoryStream(buffer);
-        //            pictureBox.Image = new Bitmap(stream);
-        //            //image = (Bitmap)pictureBox.Image;
-        //            captureBn.Enabled = true;
-        //        }));
-        //    }
-        //    _captureTimer.Enabled = true;
-        //}
 
         void _updateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -86,23 +68,6 @@ namespace SatelliteClient
                 frameRateLabel.Text = "Frame rate : " + Math.Round(_frame_fetcher.getFrameRate(), 3) + " fps";
             }));
             _updateTimer.Enabled = true;
-        }
-
-        private void captureBn_Click(object sender, EventArgs e)
-        {/*
-                captureBn.Enabled = false;
-                byte[] buffer = _satService.Capture();
-                Console.Write("Received image with " + buffer.Length + " bytes.");
-                using (MemoryStream stream = new MemoryStream(buffer))
-                {
-                  pictureBox.Image = Bitmap.FromStream(stream);
-                  //image = (Bitmap)pictureBox.Image;
-                  //pictureBox.Image.Save("c:\\picture.png", System.Drawing.Imaging.ImageFormat.Png);
-                  captureBn.Enabled = true;
-                }
-          * 
-          */
-   
         }
 
         private void connectBn_Click(object sender, EventArgs e)
@@ -122,17 +87,10 @@ namespace SatelliteClient
               
                 _updateTimer.Enabled = true;
 
-                for (int i = 0; i < 5; ++i)
-                {
-                    Console.WriteLine("Get frame " + (i + 1));
-                    pictureBox.Image = new Bitmap(new MemoryStream(_satService.Capture()));
-                }
-
                 // update position of the cursors on the track bar 
                 pitchTrackBar.Value = _orientation_fetcher.GetServoPitch();
                 yawTrackBar.Value = _orientation_fetcher.GetServoYaw();
             }));
-            
         }
 
         private void disconnectBn_Click(object sender, EventArgs e)
@@ -151,6 +109,10 @@ namespace SatelliteClient
             _frame_fetcher.Stop();
             _orientation_fetcher = new OrientationFetcher(_satService);
             _frame_fetcher = new FrameFetcher(_satService, pictureBox);
+
+            if (_scf.State == CommunicationState.Faulted) 
+                serviceConnect();
+
             clearUI();
         }
 
@@ -201,6 +163,23 @@ namespace SatelliteClient
             {
                 _orientation_fetcher.SetServoYaw(yawTrackBar.Value);
             }));
+        }
+
+        private void captureBn_Click(object sender, EventArgs e)
+        {/*
+                captureBn.Enabled = false;
+                byte[] buffer = _satService.Capture();
+                Console.Write("Received image with " + buffer.Length + " bytes.");
+                using (MemoryStream stream = new MemoryStream(buffer))
+                {
+                  pictureBox.Image = Bitmap.FromStream(stream);
+                  //image = (Bitmap)pictureBox.Image;
+                  //pictureBox.Image.Save("c:\\picture.png", System.Drawing.Imaging.ImageFormat.Png);
+                  captureBn.Enabled = true;
+                }
+          * 
+          */
+
         }
 
         private void videoBn_Click(object sender, EventArgs e)
