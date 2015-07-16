@@ -12,10 +12,12 @@ using System.Drawing.Imaging;
 
 namespace SatelliteServer
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, 
+                     ConcurrencyMode = ConcurrencyMode.Multiple, 
+                     UseSynchronizationContext = false)]
     class SatService : ISatService
     {
-        private BlockingCollection<Bitmap> _captureQueue; /** queue containing captures frame */
+        private ThreadSafeContainer<Bitmap> _container; /** queue containing captures frame */
         
         /** 
          * Image compression components
@@ -29,11 +31,11 @@ namespace SatelliteServer
         public bool _bStabilizationChanged;
         public bool _bStabilizationActive;
 
-        public SatService(BlockingCollection<Bitmap> captureQueue)
+        public SatService(ThreadSafeContainer<Bitmap> container)
         {
             initJpegEncoder();
 
-            _captureQueue = captureQueue;
+            _container = container;
 
             _bStabilizationChanged = false;
 
@@ -91,8 +93,7 @@ namespace SatelliteServer
 
         public byte[] Capture()
         {
-            Logger.instance().log("Capture request");
-            Bitmap captured = _captureQueue.Take(); // blocking
+            Bitmap captured = _container.get();
             Logger.instance().log("Process image");
             
             MemoryStream stream = new MemoryStream();

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Collections.Concurrent;
 using System.Drawing;
 using System.IO;
+using System.Windows.Forms;
 
 namespace SatelliteClient
 {
@@ -14,40 +15,54 @@ namespace SatelliteClient
         /**
          * The thread object that checks for data
          */
-        private ConcurrentQueue<Bitmap> _frameQueue; // store the received frames
         private SatelliteServer.ISatService _satService; /** Service for capturing images */
+        private PictureBox _pBox;
+        private int _frameCnt;
+        private MovingAverageDouble _frameRate;
+        private System.Timers.Timer _frameRateTimer;
 
-        public FrameFetcher(SatelliteServer.ISatService service)
+        public FrameFetcher(SatelliteServer.ISatService service, PictureBox pBox)
         {
-            _frameQueue = new ConcurrentQueue<Bitmap>();
             _satService = service;
+            _pBox = pBox;
+            _frameCnt = 0;
+            _frameRate = new MovingAverageDouble(5);
+            _frameRateTimer = new System.Timers.Timer(1000);
+            _frameRateTimer.Elapsed += new System.Timers.ElapsedEventHandler(computeFrameRate);
         }
 
-        /**
-         * Return the next (compared to the one returned from the last call) frame fetched from the server
-         * Might block if no frame were received
-         */
-        public Bitmap getNextFrame() 
+        private void computeFrameRate(object sender, System.Timers.ElapsedEventArgs e)
         {
-            Bitmap bitmap;
-
-            if (_frameQueue.TryDequeue(out bitmap))
-                throw new Exception();
-            else return bitmap;
+            lock (this) {
+                _frameRate.push((double) _frameCnt); 
+                _frameCnt = 0;
+            }
         }
 
+        public double getFrameRate()
+        {
+            lock (this) {
+                return _frameRate.get();
+            }
+        }
+        
         /**
          * While enabled request an image from the operation contract interface and store in a concurrent queue
          */
         protected override void work()
         {
-            try {
+            try
+            {
+                Console.WriteLine("Frame fetcher started");
+                _frameRateTimer.Enabled = true;
                 while (_go && IsAlive())
                 {
                     byte[] buffer = _satService.Capture();
-                    _frameQueue.Enqueue(new Bitmap(new MemoryStream(buffer)));
-                    Console.Write("Received image with " + buffer.Length + " bytes.");
+                    _pBox.Image = new Bitmap(new MemoryStream(buffer));
+
+                    lock(this) { ++_frameCnt; }
                 }
+                _frameRateTimer.Enabled = false;
             } catch (Exception e) {
                 Console.Error.Write("Exception in Frame Fetcher : {0}\n", e.Message);
             }

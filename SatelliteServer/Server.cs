@@ -21,8 +21,7 @@ namespace SatelliteServer
         private ServoDriver _servoDriver; /** The driver of the servo */
         private Um6Driver _um6Driver; /** Driver of the sensors */
 
-        private Bitmap _trashBitmap; /** Bitmap in which will be discarded old image */
-        private BlockingCollection<Bitmap> _captureQueue; /** Queue in which will be stored the consecutive frames received from the camera */
+        private ThreadSafeContainer<Bitmap> _container; /** Queue in which will be stored the consecutive frames received from the camera */
         
         private PictureBox _pBox; /** Picture box on which the image must be displayed */
         private bool _printOnPbox; /** True for sending the picture in the picture box */
@@ -51,8 +50,7 @@ namespace SatelliteServer
         {
             this._pBox = pBox;
             this._printOnPbox = printOnPbox;
-            this._trashBitmap = null;
-            this._captureQueue = new BlockingCollection<Bitmap>();
+            this._container = new ThreadSafeContainer<Bitmap>();
             this._logger = Logger.instance();
 
             initCameraDriver((int) hWind, (int) pBox.Handle.ToInt64());
@@ -71,7 +69,7 @@ namespace SatelliteServer
             binding.MaxBufferPoolSize = 20000000;
             binding.MaxBufferSize = 20000000;
             binding.Security.Mode = SecurityMode.None;
-            _service = new SatService(_captureQueue);
+            _service = new SatService(_container);
             _host = new ServiceHost(_service);
             _host.AddServiceEndpoint(typeof(ISatService),
                                      binding,
@@ -97,8 +95,13 @@ namespace SatelliteServer
         private void cameraCaptureHandler(object sender, Bitmap frame)
         {
             if (_printOnPbox)
-                _pBox.Image = (Bitmap) frame.Clone();
-            enqueueFrame(frame);
+                _pBox.Image = bitmapDeepCopy(frame);
+            enqueueFrame(bitmapDeepCopy(frame));
+        }
+
+        private Bitmap bitmapDeepCopy(Bitmap input)
+        {
+            return input.Clone(new Rectangle(0, 0, input.Width, input.Height), input.PixelFormat);
         }
 
         /**
@@ -106,17 +109,7 @@ namespace SatelliteServer
          */
         private void enqueueFrame(Bitmap frame)
         {
-            if (this._trashBitmap == null)
-            {
-                this._trashBitmap = (Bitmap) frame.Clone(); // copy the first frame to initialize the thrash bitmap
-            }
-
-            /**
-             * Store at most one image (the last one) in the queue so that there is no latency due to queueing
-             * The image that is stored is extracted in the trash field
-             */
-            _captureQueue.TryTake(out _trashBitmap);
-            _captureQueue.Add(frame);
+            _container.set(frame);
         }
 
         /**
@@ -183,15 +176,21 @@ namespace SatelliteServer
         {
             if (_cameraDriver != null)
             {
-                _logger.log("Closing camera");
+                _logger.log("Shutting down camera");
                 _cameraDriver.StopVideo();
                 _cameraDriver.ShutDown();
             }
 
             if (_servoDriver != null)
             {
-                _logger.log("Closing servos drivers");
+                _logger.log("Shutting down servos");
                 _servoDriver.Dispose();
+            }
+
+            if (_host != null)
+            {
+                _logger.log("Closing service endpoint");
+                _host.Close();
             }
         }
     }

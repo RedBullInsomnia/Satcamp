@@ -82,6 +82,8 @@ namespace SatelliteClient
 
                 servoYaw.Text = "" + _orientation_fetcher.GetServoYaw();
                 servoPitch.Text = "" + _orientation_fetcher.GetServoPitch();
+
+                frameRateLabel.Text = "Frame rate : " + Math.Round(_frame_fetcher.getFrameRate(), 3) + " fps";
             }));
             _updateTimer.Enabled = true;
         }
@@ -108,7 +110,7 @@ namespace SatelliteClient
             Invoke(new Action(() => {
                 // try to ping the server
                 try {
-                    _satService.Ping();
+                    _satService.NamedPing("hello world");
                 } catch (EndpointNotFoundException ex) {
                     MessageBox.Show("Error: impossible to ping the server");
                     Console.Error.WriteLine("Error: impossible to ping the server");
@@ -116,15 +118,15 @@ namespace SatelliteClient
                 }
 
                 _orientation_fetcher.Start(); 
-                //_frame_fetcher.Start();
+                _frame_fetcher.Start();
               
                 _updateTimer.Enabled = true;
 
-                /*for (int i = 0; i < 5; ++i)
+                for (int i = 0; i < 5; ++i)
                 {
                     Console.WriteLine("Get frame " + (i + 1));
                     pictureBox.Image = new Bitmap(new MemoryStream(_satService.Capture()));
-                }*/
+                }
 
                 // update position of the cursors on the track bar 
                 pitchTrackBar.Value = _orientation_fetcher.GetServoPitch();
@@ -146,9 +148,9 @@ namespace SatelliteClient
         {
             _updateTimer.Enabled = false;
             _orientation_fetcher.Stop();
-            //_frame_fetcher.Stop();
+            _frame_fetcher.Stop();
             _orientation_fetcher = new OrientationFetcher(_satService);
-            //_frame_fetcher = new FrameFetcher(_satService);
+            _frame_fetcher = new FrameFetcher(_satService, pictureBox);
             clearUI();
         }
 
@@ -164,6 +166,7 @@ namespace SatelliteClient
                 tbPitch.Clear();
                 tbYaw.Clear();
                 pictureBox.Image = null;
+                frameRateLabel.Text = "";
             }));
         }
 

@@ -96,6 +96,7 @@
     <Compile Include="Server.cs" />
     <Compile Include="SatService.cs" />
     <Compile Include="Drivers\ServoDriver.cs" />
+    <Compile Include="ThreadSafeContainer.cs" />
     <Compile Include="Window.cs">
       <SubType>Form</SubType>
     </Compile>

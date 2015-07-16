@@ -36,6 +36,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBoxServos = new System.Windows.Forms.GroupBox();
+            this.servoPos = new System.Windows.Forms.Label();
+            this.servoYaw = new System.Windows.Forms.TextBox();
+            this.servoPitch = new System.Windows.Forms.TextBox();
             this.stabilizeCb = new System.Windows.Forms.CheckBox();
             this.yawTrackBar = new System.Windows.Forms.TrackBar();
             this.pitchTrackBar = new System.Windows.Forms.TrackBar();
@@ -47,9 +50,7 @@
             this.videoBn = new System.Windows.Forms.Button();
             this.saveImageButton = new System.Windows.Forms.Button();
             this.disconnectBn = new System.Windows.Forms.Button();
-            this.servoPitch = new System.Windows.Forms.TextBox();
-            this.servoYaw = new System.Windows.Forms.TextBox();
-            this.servoPos = new System.Windows.Forms.Label();
+            this.frameRateLabel = new System.Windows.Forms.Label();
             this.groupBoxOrientation.SuspendLayout();
             this.groupBoxServos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.yawTrackBar)).BeginInit();
@@ -148,6 +149,35 @@
             this.groupBoxServos.TabIndex = 1;
             this.groupBoxServos.TabStop = false;
             this.groupBoxServos.Text = "Servos";
+            // 
+            // servoPos
+            // 
+            this.servoPos.AutoSize = true;
+            this.servoPos.Location = new System.Drawing.Point(437, 16);
+            this.servoPos.Name = "servoPos";
+            this.servoPos.Size = new System.Drawing.Size(37, 13);
+            this.servoPos.TabIndex = 8;
+            this.servoPos.Text = "Actual";
+            // 
+            // servoYaw
+            // 
+            this.servoYaw.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.servoYaw.Location = new System.Drawing.Point(437, 68);
+            this.servoYaw.Name = "servoYaw";
+            this.servoYaw.Size = new System.Drawing.Size(79, 20);
+            this.servoYaw.TabIndex = 7;
+            this.servoYaw.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // servoPitch
+            // 
+            this.servoPitch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.servoPitch.Location = new System.Drawing.Point(437, 35);
+            this.servoPitch.Name = "servoPitch";
+            this.servoPitch.Size = new System.Drawing.Size(79, 20);
+            this.servoPitch.TabIndex = 6;
+            this.servoPitch.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // stabilizeCb
             // 
@@ -291,36 +321,20 @@
             this.disconnectBn.UseVisualStyleBackColor = true;
             this.disconnectBn.Click += new System.EventHandler(this.disconnectBn_Click);
             // 
-            // servoPitch
+            // frameRateLabel
             // 
-            this.servoPitch.Location = new System.Drawing.Point(437, 35);
-            this.servoPitch.Name = "servoPitch";
-            this.servoPitch.Size = new System.Drawing.Size(79, 20);
-            this.servoPitch.TabIndex = 6;
-            this.servoPitch.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // servoYaw
-            // 
-            this.servoYaw.Location = new System.Drawing.Point(437, 68);
-            this.servoYaw.Name = "servoYaw";
-            this.servoYaw.Size = new System.Drawing.Size(79, 20);
-            this.servoYaw.TabIndex = 7;
-            this.servoYaw.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // servoPos
-            // 
-            this.servoPos.AutoSize = true;
-            this.servoPos.Location = new System.Drawing.Point(437, 16);
-            this.servoPos.Name = "servoPos";
-            this.servoPos.Size = new System.Drawing.Size(37, 13);
-            this.servoPos.TabIndex = 8;
-            this.servoPos.Text = "Actual";
+            this.frameRateLabel.AutoSize = true;
+            this.frameRateLabel.Location = new System.Drawing.Point(197, 543);
+            this.frameRateLabel.Name = "frameRateLabel";
+            this.frameRateLabel.Size = new System.Drawing.Size(0, 13);
+            this.frameRateLabel.TabIndex = 10;
             // 
             // Window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(679, 570);
+            this.Controls.Add(this.frameRateLabel);
             this.Controls.Add(this.disconnectBn);
             this.Controls.Add(this.saveImageButton);
             this.Controls.Add(this.videoBn);
@@ -342,6 +356,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pitchTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -369,6 +384,7 @@
         private System.Windows.Forms.Label servoPos;
         private System.Windows.Forms.TextBox servoYaw;
         private System.Windows.Forms.TextBox servoPitch;
+        private System.Windows.Forms.Label frameRateLabel;
 
     }
 }
