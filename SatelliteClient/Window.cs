@@ -177,7 +177,7 @@ namespace SatelliteClient
                   //pictureBox.Image.Save("c:\\picture.png", System.Drawing.Imaging.ImageFormat.Png);
                   captureBn.Enabled = true;
                 }
-          * 
+          * D:\Documents\BitBucket\Satcamp\SatelliteClient\MovingAverage.cs
           */
 
         }

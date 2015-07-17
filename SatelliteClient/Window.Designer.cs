@@ -51,11 +51,17 @@
             this.saveImageButton = new System.Windows.Forms.Button();
             this.disconnectBn = new System.Windows.Forms.Button();
             this.frameRateLabel = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.groupBoxOrientation.SuspendLayout();
             this.groupBoxServos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.yawTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pitchTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBoxOrientation
@@ -145,15 +151,16 @@
             this.groupBoxServos.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxServos.Name = "groupBoxServos";
             this.groupBoxServos.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBoxServos.Size = new System.Drawing.Size(522, 97);
+            this.groupBoxServos.Size = new System.Drawing.Size(512, 97);
             this.groupBoxServos.TabIndex = 1;
             this.groupBoxServos.TabStop = false;
             this.groupBoxServos.Text = "Servos";
             // 
             // servoPos
             // 
+            this.servoPos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.servoPos.AutoSize = true;
-            this.servoPos.Location = new System.Drawing.Point(437, 16);
+            this.servoPos.Location = new System.Drawing.Point(427, 16);
             this.servoPos.Name = "servoPos";
             this.servoPos.Size = new System.Drawing.Size(37, 13);
             this.servoPos.TabIndex = 8;
@@ -161,9 +168,8 @@
             // 
             // servoYaw
             // 
-            this.servoYaw.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.servoYaw.Location = new System.Drawing.Point(437, 68);
+            this.servoYaw.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.servoYaw.Location = new System.Drawing.Point(424, 67);
             this.servoYaw.Name = "servoYaw";
             this.servoYaw.Size = new System.Drawing.Size(79, 20);
             this.servoYaw.TabIndex = 7;
@@ -171,9 +177,8 @@
             // 
             // servoPitch
             // 
-            this.servoPitch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.servoPitch.Location = new System.Drawing.Point(437, 35);
+            this.servoPitch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.servoPitch.Location = new System.Drawing.Point(424, 37);
             this.servoPitch.Name = "servoPitch";
             this.servoPitch.Size = new System.Drawing.Size(79, 20);
             this.servoPitch.TabIndex = 6;
@@ -181,9 +186,9 @@
             // 
             // stabilizeCb
             // 
-            this.stabilizeCb.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.stabilizeCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.stabilizeCb.AutoSize = true;
-            this.stabilizeCb.Location = new System.Drawing.Point(10, 14);
+            this.stabilizeCb.Location = new System.Drawing.Point(357, 15);
             this.stabilizeCb.Margin = new System.Windows.Forms.Padding(2);
             this.stabilizeCb.Name = "stabilizeCb";
             this.stabilizeCb.Size = new System.Drawing.Size(65, 17);
@@ -203,7 +208,7 @@
             this.yawTrackBar.Maximum = 8000;
             this.yawTrackBar.Minimum = 4000;
             this.yawTrackBar.Name = "yawTrackBar";
-            this.yawTrackBar.Size = new System.Drawing.Size(395, 29);
+            this.yawTrackBar.Size = new System.Drawing.Size(385, 29);
             this.yawTrackBar.SmallChange = 10;
             this.yawTrackBar.TabIndex = 4;
             this.yawTrackBar.TickFrequency = 100;
@@ -221,7 +226,7 @@
             this.pitchTrackBar.Maximum = 8000;
             this.pitchTrackBar.Minimum = 4000;
             this.pitchTrackBar.Name = "pitchTrackBar";
-            this.pitchTrackBar.Size = new System.Drawing.Size(395, 29);
+            this.pitchTrackBar.Size = new System.Drawing.Size(385, 29);
             this.pitchTrackBar.SmallChange = 10;
             this.pitchTrackBar.TabIndex = 3;
             this.pitchTrackBar.TickFrequency = 100;
@@ -257,14 +262,14 @@
             this.pictureBox.Location = new System.Drawing.Point(9, 111);
             this.pictureBox.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(661, 422);
+            this.pictureBox.Size = new System.Drawing.Size(768, 539);
             this.pictureBox.TabIndex = 2;
             this.pictureBox.TabStop = false;
             // 
             // captureBn
             // 
             this.captureBn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.captureBn.Location = new System.Drawing.Point(585, 537);
+            this.captureBn.Location = new System.Drawing.Point(690, 654);
             this.captureBn.Margin = new System.Windows.Forms.Padding(2);
             this.captureBn.Name = "captureBn";
             this.captureBn.Size = new System.Drawing.Size(84, 24);
@@ -276,7 +281,7 @@
             // connectBn
             // 
             this.connectBn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.connectBn.Location = new System.Drawing.Point(9, 537);
+            this.connectBn.Location = new System.Drawing.Point(9, 654);
             this.connectBn.Margin = new System.Windows.Forms.Padding(2);
             this.connectBn.Name = "connectBn";
             this.connectBn.Size = new System.Drawing.Size(84, 24);
@@ -288,7 +293,7 @@
             // videoBn
             // 
             this.videoBn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.videoBn.Location = new System.Drawing.Point(497, 537);
+            this.videoBn.Location = new System.Drawing.Point(602, 654);
             this.videoBn.Margin = new System.Windows.Forms.Padding(2);
             this.videoBn.Name = "videoBn";
             this.videoBn.Size = new System.Drawing.Size(84, 24);
@@ -300,7 +305,7 @@
             // saveImageButton
             // 
             this.saveImageButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveImageButton.Location = new System.Drawing.Point(409, 537);
+            this.saveImageButton.Location = new System.Drawing.Point(514, 654);
             this.saveImageButton.Margin = new System.Windows.Forms.Padding(2);
             this.saveImageButton.Name = "saveImageButton";
             this.saveImageButton.Size = new System.Drawing.Size(84, 24);
@@ -312,7 +317,7 @@
             // disconnectBn
             // 
             this.disconnectBn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.disconnectBn.Location = new System.Drawing.Point(99, 537);
+            this.disconnectBn.Location = new System.Drawing.Point(99, 654);
             this.disconnectBn.Margin = new System.Windows.Forms.Padding(2);
             this.disconnectBn.Name = "disconnectBn";
             this.disconnectBn.Size = new System.Drawing.Size(84, 24);
@@ -329,11 +334,68 @@
             this.frameRateLabel.Size = new System.Drawing.Size(0, 13);
             this.frameRateLabel.TabIndex = 10;
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.textBox2);
+            this.groupBox1.Controls.Add(this.textBox3);
+            this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.label8);
+            this.groupBox1.Location = new System.Drawing.Point(664, 11);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox1.Size = new System.Drawing.Size(113, 96);
+            this.groupBox1.TabIndex = 11;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Stabilization";
+            // 
+            // textBox2
+            // 
+            this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox2.Location = new System.Drawing.Point(29, 60);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(76, 20);
+            this.textBox2.TabIndex = 4;
+            // 
+            // textBox3
+            // 
+            this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox3.Location = new System.Drawing.Point(29, 26);
+            this.textBox3.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(76, 20);
+            this.textBox3.TabIndex = 3;
+            // 
+            // label7
+            // 
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 63);
+            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(20, 13);
+            this.label7.TabIndex = 1;
+            this.label7.Text = "Kp";
+            // 
+            // label8
+            // 
+            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(9, 29);
+            this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(16, 13);
+            this.label8.TabIndex = 0;
+            this.label8.Text = "Ki";
+            // 
             // Window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(679, 570);
+            this.ClientSize = new System.Drawing.Size(784, 687);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.frameRateLabel);
             this.Controls.Add(this.disconnectBn);
             this.Controls.Add(this.saveImageButton);
@@ -344,6 +406,7 @@
             this.Controls.Add(this.groupBoxServos);
             this.Controls.Add(this.groupBoxOrientation);
             this.Margin = new System.Windows.Forms.Padding(2);
+            this.MinimumSize = new System.Drawing.Size(800, 726);
             this.Name = "Window";
             this.Text = "Client";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Window_FormClosing);
@@ -355,6 +418,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.yawTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pitchTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -385,6 +450,11 @@
         private System.Windows.Forms.TextBox servoYaw;
         private System.Windows.Forms.TextBox servoPitch;
         private System.Windows.Forms.Label frameRateLabel;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
 
     }
 }
