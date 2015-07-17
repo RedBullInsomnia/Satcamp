@@ -28,6 +28,8 @@ namespace SatelliteServer
 
         private Logger _logger; /** for outputting message */
 
+        private ControlThread _controller; /** Thread for stabilizing the servo */
+
         /**
          * Information about the serial port for communicating with the sensors
          */
@@ -52,11 +54,13 @@ namespace SatelliteServer
             this._printOnPbox = printOnPbox;
             this._container = new ThreadSafeContainer<Bitmap>();
             this._logger = Logger.instance();
+            this._controller = null;
 
             initCameraDriver((int) hWind, (int) pBox.Handle.ToInt64());
             initSensors();
             initServos();
             initService();
+            initController();
         }
 
         /**
@@ -131,6 +135,30 @@ namespace SatelliteServer
             _logger.log("Servos driver successfully initialized");
         }
 
+        /**
+         * Start the controller thread  
+         */
+        private void startController() 
+        {
+            if (_controller != null)
+                return;
+
+            _controller = new ControlThread(_um6Driver, _service);
+            _controller.Start();
+        }
+
+        /**
+         * Stop the controller thread and set _controller to null
+         */
+        private void stopController()
+        {
+            if (_controller == null)
+                return;
+
+            _controller.Stop();
+            _controller = null;
+        }
+
         public void passMessage(ref Message m)
         {
             _cameraDriver.HandleMessage(m.Msg, m.LParam.ToInt64(), m.WParam.ToInt32());
@@ -149,20 +177,32 @@ namespace SatelliteServer
                 // fetch euler angles
                 _service._eulerAngles = new double[3] { _um6Driver.Angles[0], _um6Driver.Angles[1], _um6Driver.Angles[2] };
 
-                // Transfer servo modification order to the servos 
-                // do it with Pitch
-                if (_service._servoChanged[PITCH_SERVO_ADDR])
+                if(_service._bStabilizationActive)
                 {
-                    _service._servoChanged[PITCH_SERVO_ADDR] = false;
-                    _servoDriver.SetServo(PITCH_SERVO_ADDR, (ushort)_service._servoPos[PITCH_SERVO_ADDR]);
-                }
+                    if (_controller == null)
+                        startController();
+                } 
+                else 
+                {
+                    // stop controller thread if it was launched
+                    if (_controller != null && _controller.IsAlive())
+                        stopController();
 
-                // do it with Yaw
-                if (_service._servoChanged[YAW_SERVO_ADDR])
-                {
-                    _service._servoChanged[YAW_SERVO_ADDR] = false;
-                    _servoDriver.SetServo(YAW_SERVO_ADDR, (ushort)_service._servoPos[YAW_SERVO_ADDR]);
-                }
+                    // Transfer servo modification order to the servos 
+                    // do it with Pitch
+                    if (_service._servoChanged[PITCH_SERVO_ADDR])
+                    {
+                        _service._servoChanged[PITCH_SERVO_ADDR] = false;
+                        _servoDriver.SetServo(PITCH_SERVO_ADDR, (ushort)_service._servoPos[PITCH_SERVO_ADDR]);
+                    }
+
+                    // do it with Yaw
+                    if (_service._servoChanged[YAW_SERVO_ADDR])
+                    {
+                        _service._servoChanged[YAW_SERVO_ADDR] = false;
+                        _servoDriver.SetServo(YAW_SERVO_ADDR, (ushort)_service._servoPos[YAW_SERVO_ADDR]);
+                    }
+                }   
             }
 
             _logger.log("Server main loop has ended");
@@ -191,6 +231,12 @@ namespace SatelliteServer
             {
                 _logger.log("Closing service endpoint");
                 _host.Close();
+            }
+
+            if (_controller != null)
+            {
+                _logger.log("Stop controller thread");
+                _controller.Stop();
             }
         }
     }

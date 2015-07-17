@@ -75,23 +75,23 @@ namespace SatelliteServer
             return _eulerAngles;
         }
 
-        double getKi()
+        public double getKi()
         {
             return _ki;
         }
 
-        double getKp()
+        public double getKp()
         {
             return _kp;
         }
 
-        void setKi(double ki)
+        public void setKi(double ki)
         {
             _ki = ki;
             _kiChanged = true;
         }
 
-        void setKp(double kp)
+        public void setKp(double kp)
         {
             _kp = kp;
             _kpChanged = true;
