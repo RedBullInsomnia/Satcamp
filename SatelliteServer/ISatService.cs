@@ -24,6 +24,18 @@ namespace SatelliteServer
         int GetServoPos(int channel);
 
         [OperationContract]
+        double getKi();
+
+        [OperationContract]
+        double getKp();
+
+        [OperationContract]
+        void setKi(double Ki);
+
+        [OperationContract]
+        void setKp(double Kp);
+
+        [OperationContract]
         string NamedPing(string name);
 
         [OperationContract]

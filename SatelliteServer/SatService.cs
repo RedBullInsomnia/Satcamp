@@ -27,6 +27,8 @@ namespace SatelliteServer
 
         public double[] _eulerAngles;
         public int[] _servoPos;
+        public double _ki, _kp;
+        public bool _kiChanged, _kpChanged;
         public bool[] _servoChanged;
         public bool _bStabilizationChanged;
         public bool _bStabilizationActive;
@@ -71,6 +73,28 @@ namespace SatelliteServer
         public double[] GetEulerAngles()
         {
             return _eulerAngles;
+        }
+
+        double getKi()
+        {
+            return _ki;
+        }
+
+        double getKp()
+        {
+            return _kp;
+        }
+
+        void setKi(double ki)
+        {
+            _ki = ki;
+            _kiChanged = true;
+        }
+
+        void setKp(double kp)
+        {
+            _kp = kp;
+            _kpChanged = true;
         }
 
         public void SetServoPos(int channel, int val)
