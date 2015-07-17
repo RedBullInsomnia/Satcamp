@@ -60,7 +60,6 @@ namespace SatelliteServer
             initSensors();
             initServos();
             initService();
-            initController();
         }
 
         /**
