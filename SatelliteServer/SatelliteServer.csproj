@@ -71,6 +71,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -90,7 +91,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseThread.cs" />
+    <Compile Include="CamData.cs" />
     <Compile Include="ConsoleLogger.cs" />
+    <Compile Include="ControlThread.cs" />
     <Compile Include="Drivers\CameraDriver.cs" />
     <Compile Include="ISatService.cs" />
     <Compile Include="Server.cs" />

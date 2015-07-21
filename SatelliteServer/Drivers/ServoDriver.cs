@@ -50,7 +50,7 @@ namespace SatelliteServer
                 return;
             
             try { _device.Dispose(); } 
-            catch (Exception e) { } 
+            catch (Exception) { } 
             finally { _device = null; }
 
         }

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms; // Message
+using System.Threading;
 using System.Threading.Tasks;
 using System.ServiceModel;
 using System.Net;
@@ -18,6 +19,8 @@ namespace SatelliteServer
         private ServiceHost _host; /** Host object representing the host of the service */
 
         private CameraDriver _cameraDriver; /** The driver of the camera */
+        private const double DEF_FPS = 5.0, DEF_EXP_TIME = 100.0; /** default camera parameters */
+        private int _hWind, _hPbox; /** Handles */
         private ServoDriver _servoDriver; /** The driver of the servo */
         private Um6Driver _um6Driver; /** Driver of the sensors */
 
@@ -39,8 +42,8 @@ namespace SatelliteServer
         /**
          * Servos data
          */
-        private const byte PITCH_SERVO_ADDR = 1;
-        private const byte YAW_SERVO_ADDR = 0;
+        public const byte PITCH_SERVO_ADDR = 1;
+        public const byte YAW_SERVO_ADDR = 0;
 
         /**
          * Construct the server object :
@@ -50,13 +53,15 @@ namespace SatelliteServer
          */
         public Server(long hWind, PictureBox pBox, bool printOnPbox)
         {
+            this._hWind = (int) hWind;
+            this._hPbox = (int) pBox.Handle.ToInt64();
             this._pBox = pBox;
             this._printOnPbox = printOnPbox;
             this._container = new ThreadSafeContainer<Bitmap>();
             this._logger = Logger.instance();
             this._controller = null;
 
-            initCameraDriver((int) hWind, (int) pBox.Handle.ToInt64());
+            initCameraDriver();
             initSensors();
             initServos();
             initService();
@@ -84,12 +89,12 @@ namespace SatelliteServer
         /**
          * Initialize the camera driver
          */
-        private void initCameraDriver(int hWind, int hPictBox)
+        private void initCameraDriver()
         {
-            _cameraDriver = new CameraDriver(hWind);
-            _cameraDriver.Init(hPictBox);
+            _cameraDriver = new CameraDriver(_hWind);
+            _cameraDriver.Init(_hPbox);
             _cameraDriver.CameraCapture += cameraCaptureHandler;
-            _logger.log("Camera driver successfully initialized");
+            _logger.log("Camera driver successfully (re)initialized");
         }
 
         /**
@@ -139,11 +144,14 @@ namespace SatelliteServer
          */
         private void startController() 
         {
+            // accelerometer seems to be deficient so control is impossible
+            throw new NotImplementedException("Controller not implemented");
+            /*
             if (_controller != null)
                 return;
 
-            _controller = new ControlThread(_um6Driver, _service);
-            _controller.Start();
+            _controller = new ControlThread(_um6Driver, _servoDriver, _service, _um6Driver.Angles[1], _um6Driver.Angles[2]);
+            _controller.Start(); */
         }
 
         /**
@@ -160,7 +168,12 @@ namespace SatelliteServer
 
         public void passMessage(ref Message m)
         {
-            _cameraDriver.HandleMessage(m.Msg, m.LParam.ToInt64(), m.WParam.ToInt32());
+            if (_cameraDriver == null)
+                return;
+            lock (this)
+            {
+                _cameraDriver.HandleMessage(m.Msg, m.LParam.ToInt64(), m.WParam.ToInt32());
+            }
         }
 
         /**
@@ -169,39 +182,66 @@ namespace SatelliteServer
         protected override void work()
         {
             _logger.log("Server main loop has started");
+
+            // set default camera parameters
+            _service._frameRate = DEF_FPS;
+            _service._expTime = DEF_EXP_TIME;
+            _cameraDriver.setFps(DEF_FPS);
+            _cameraDriver.setExposureTime(DEF_EXP_TIME);
+
             _cameraDriver.StartVideo();
 
             while (_go && IsAlive())
             {
                 // fetch euler angles
-                _service._eulerAngles = new double[3] { _um6Driver.Angles[0], _um6Driver.Angles[1], _um6Driver.Angles[2] };
+                lock (_um6Driver) {
+                    _service._eulerAngles[0] = _um6Driver.Angles[0]; // roll
+                    _service._eulerAngles[1] = _um6Driver.Angles[1]; // pitch
+                    _service._eulerAngles[2] = _um6Driver.Angles[2]; // yaw
+                }
 
-                if(_service._bStabilizationActive)
+
+                // Transfer servo modification order to the servos 
+                // do it with Pitch
+                if (_service._servoChanged[PITCH_SERVO_ADDR])
                 {
-                    if (_controller == null)
-                        startController();
-                } 
-                else 
+                    _service._servoChanged[PITCH_SERVO_ADDR] = false;
+                    _servoDriver.SetServo(PITCH_SERVO_ADDR, (ushort)_service._servoPos[PITCH_SERVO_ADDR]);
+                }
+
+                // do it with Yaw
+                if (_service._servoChanged[YAW_SERVO_ADDR])
+                {
+                    _service._servoChanged[YAW_SERVO_ADDR] = false;
+                    _servoDriver.SetServo(YAW_SERVO_ADDR, (ushort)_service._servoPos[YAW_SERVO_ADDR]);
+                }
+
+                // check if camera parameters were changed
+                if (_service._expTimeChanged || _service._frameRateChanged)
+                {
+                    // create a new camera drive with the new parameters
+                    lock (this)
+                    {
+                        _cameraDriver.StopVideo();
+                        _cameraDriver.ShutDown();
+                        initCameraDriver();
+                        _cameraDriver.setExposureTime(_service._expTime);
+                        _cameraDriver.setFps(_service._frameRate);
+                        _cameraDriver.StartVideo();
+                        _service._frameRateChanged = false;
+                        _service._expTimeChanged = false;
+                    }
+                }
+
+                /** Commented because accelerometer is deficient - control is impossible
+                if (_service._bStabilizationActive) 
+                    startController();
+                else
                 {
                     // stop controller thread if it was launched
-                    if (_controller != null && _controller.IsAlive())
-                        stopController();
-
-                    // Transfer servo modification order to the servos 
-                    // do it with Pitch
-                    if (_service._servoChanged[PITCH_SERVO_ADDR])
-                    {
-                        _service._servoChanged[PITCH_SERVO_ADDR] = false;
-                        _servoDriver.SetServo(PITCH_SERVO_ADDR, (ushort)_service._servoPos[PITCH_SERVO_ADDR]);
-                    }
-
-                    // do it with Yaw
-                    if (_service._servoChanged[YAW_SERVO_ADDR])
-                    {
-                        _service._servoChanged[YAW_SERVO_ADDR] = false;
-                        _servoDriver.SetServo(YAW_SERVO_ADDR, (ushort)_service._servoPos[YAW_SERVO_ADDR]);
-                    }
-                }   
+                    stopController();
+                    // place here the code for controlling the manuallythe servo
+                }    **/
             }
 
             _logger.log("Server main loop has ended");
@@ -237,6 +277,16 @@ namespace SatelliteServer
                 _logger.log("Stop controller thread");
                 _controller.Stop();
             }
+        }
+
+        public void SetPrintInBox(bool doPrint)
+        {
+            _printOnPbox = doPrint;
+        }
+
+        public bool getPrintInBox()
+        {
+            return _printOnPbox;
         }
     }
 }

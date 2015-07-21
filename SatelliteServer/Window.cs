@@ -22,7 +22,7 @@ namespace SatelliteServer
     public Window()
     {
         InitializeComponent();
-        _server = new Server(this.Handle.ToInt64(), pictureBox, true); // ideally, set to false in production to avoid lost of time due to image copying
+        _server = new Server(this.Handle.ToInt64(), pictureBox, false); // ideally, set to false in production to avoid lost of time due to image copying
     }
 
     [System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.Demand, Name = "FullTrust")]
@@ -56,6 +56,13 @@ namespace SatelliteServer
     private void richTextBox1_TextChanged(object sender, EventArgs e)
     {
 
+    }
+
+    private void displayCheckBox_CheckedChanged(object sender, EventArgs e)
+    {
+        Invoke(new Action(() => {
+            _server.SetPrintInBox(displayCheckBox.Checked);
+        }));
     }
   }
 }

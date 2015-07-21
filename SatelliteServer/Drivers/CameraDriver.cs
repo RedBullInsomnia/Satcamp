@@ -34,6 +34,10 @@ namespace SatelliteServer
 
             m_bDrawing = false;
             m_RenderMode = uc480.IS_RENDER_NORMAL;
+
+            // default parameters
+            expTime = 10.0; // ms
+            fps = 5.0; // frame / s
 	    }
 
         public bool Capture()
@@ -149,8 +153,10 @@ namespace SatelliteServer
 
         unsafe public void StartVideo()
         {
-            double fps = 5.0;
-            m_uc480.SetFrameRate(5.0, ref fps);
+            double fps = this.fps, // frame / sec 
+                    expTime = this.expTime; // milliseconds
+            m_uc480.SetFrameRate(this.fps, ref fps);
+            m_uc480.SetExposureTime(this.expTime, ref expTime);
             m_uc480.SetBadPixelCorrection(uc480.IS_BPC_ENABLE_SOFTWARE, 1); //trying to set bad pixel correction, needs to be studied more.
             setAutoGainBoost(true);
 
@@ -292,6 +298,26 @@ namespace SatelliteServer
                 CameraCapture(this, b);
         }
 
+        public double getExposureTime()
+        {
+            return expTime;
+        }
+
+        public void setExposureTime(double expTime)
+        {
+            this.expTime = expTime;
+        }
+
+        public double getFps()
+        {
+            return fps;
+        }
+
+        public void setFps(double fps)
+        {
+            this.fps = fps;
+        }
+
         Bitmap _captureBmp;
         private bool m_bIsStarted;
         private int	m_RenderMode;
@@ -308,5 +334,7 @@ namespace SatelliteServer
             public int nSeqNum;
         }
         private UC480IMAGE[] m_Uc480Images;
+
+        private double fps, expTime;
     }
 }

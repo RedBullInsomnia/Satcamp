@@ -83,6 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExponentialAverage.cs" />
     <Compile Include="MovingAverage.cs" />
     <Compile Include="OrientationFetcher.cs" />
     <Compile Include="FrameFetcher.cs" />

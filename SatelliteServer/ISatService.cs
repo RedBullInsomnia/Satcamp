@@ -12,7 +12,10 @@ namespace SatelliteServer
     public interface ISatService
     {
         [OperationContract]
-        void SetStabilization(bool active);
+        CamData GetCamData();
+
+        [OperationContract]
+        void SetCamData(CamData camData); 
 
         [OperationContract]
         bool GetStablizationActive();
@@ -30,10 +33,10 @@ namespace SatelliteServer
         double getKp();
 
         [OperationContract]
-        void setKi(double Ki);
+        double getFrameRate();
 
         [OperationContract]
-        void setKp(double Kp);
+        double getExposureTime();
 
         [OperationContract]
         string NamedPing(string name);
