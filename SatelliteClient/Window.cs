@@ -162,7 +162,7 @@ namespace SatelliteClient
                 service.Ping();
                 return false;
             }
-            catch (CommunicationObjectFaultedException)
+            catch (Exception)
             {
                 return true;
             }
@@ -350,11 +350,11 @@ namespace SatelliteClient
                 Invoke(new Action(() => {
                     try 
                     {
-                        _orientation_fetcher.SetFps(ReadDouble(fpsTextBox, 3.0, 10.0));
+                        _orientation_fetcher.SetFps(ReadDouble(fpsTextBox, 3.0, 20.0));
                     } 
                     catch (Exception) 
                     {
-                        MessageBox.Show("Invalid frame rate : floating point number in [3.0,10.0] expected");
+                        MessageBox.Show("Invalid frame rate : floating point number in [3.0,20.0] expected");
                     }
                 }));
             }

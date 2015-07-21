@@ -224,6 +224,8 @@ namespace SatelliteServer
                     {
                         _cameraDriver.StopVideo();
                         _cameraDriver.ShutDown();
+                        _cameraDriver = null;
+                        Thread.Sleep(200); // make sure everything is cleaned (dirty)
                         initCameraDriver();
                         _cameraDriver.setExposureTime(_service._expTime);
                         _cameraDriver.setFps(_service._frameRate);
