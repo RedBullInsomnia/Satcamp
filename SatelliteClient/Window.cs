@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Timers;
 using System.ServiceModel;
-using SatelliteClient.Properties;
 using System.IO;
 
 namespace SatelliteClient
@@ -73,9 +65,9 @@ namespace SatelliteClient
             _updateTimer.Enabled = false;
             Invoke(new Action(() =>
             {
-                tbRoll.Text = "" + Math.Round(_orientation_fetcher.GetRoll(), 3);
-                tbPitch.Text = "" + Math.Round(_orientation_fetcher.GetPitch(), 3);
-                tbYaw.Text = "" + Math.Round(_orientation_fetcher.GetYaw(), 3);
+                tbRoll.Text = "" + Math.Round(_orientation_fetcher.GetRoll(), 1);
+                tbPitch.Text = "" + Math.Round(_orientation_fetcher.GetPitch(), 1);
+                tbYaw.Text = "" + Math.Round(_orientation_fetcher.GetYaw(), 1);
 
                 servoYaw.Text = "" + _orientation_fetcher.GetServoYaw();
                 servoPitch.Text = "" + _orientation_fetcher.GetServoPitch();
@@ -93,7 +85,7 @@ namespace SatelliteClient
                 // try to ping the server
                 try
                 {
-                    _satService.NamedPing("hello world");
+                    _satService.NamedPing("Hello world !");
                 }
                 catch (Exception)
                 {
@@ -105,7 +97,7 @@ namespace SatelliteClient
 
                 connectBn.Enabled = false;
                 disconnectBn.Enabled = true;
-                // stabilizeCb.Enabled = true; // controller disabled server side
+                stabilizeCb.Enabled = true; // to enable/disable the controller server side
 
                 _orientation_fetcher.Start();
                 _frame_fetcher.Start();

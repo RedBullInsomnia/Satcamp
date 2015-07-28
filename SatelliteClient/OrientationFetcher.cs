@@ -9,7 +9,7 @@ namespace SatelliteClient
 {
     class OrientationFetcher : SatelliteServer.BaseThread
     {
-        private int DEFAULT_SERVO_POS = 4000;
+        private int DEFAULT_SERVO_POS = 6000;
         private int _goal_pitch, _goal_yaw; /** Objective servo angles */
         private bool _stabilizeMode, _stabilizeModeGoal; /** True for the stabilize mode */
         private ExponentialAverage _roll, _pitch, _yaw; /** Euler angles as moving averages */

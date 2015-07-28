@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿using System.Drawing;
 using System.Windows.Forms; // Message
 using System.Threading;
-using System.Threading.Tasks;
 using System.ServiceModel;
-using System.Net;
-using System.Net.Sockets;
-using System.Collections.Concurrent;
 
 namespace SatelliteServer
 {
@@ -144,14 +136,11 @@ namespace SatelliteServer
          */
         private void startController() 
         {
-            // accelerometer seems to be deficient so control is impossible
-            throw new NotImplementedException("Controller not implemented");
-            /*
             if (_controller != null)
                 return;
 
             _controller = new ControlThread(_um6Driver, _servoDriver, _service, _um6Driver.Angles[1], _um6Driver.Angles[2]);
-            _controller.Start(); */
+            _controller.Start();
         }
 
         /**
@@ -234,8 +223,7 @@ namespace SatelliteServer
                         _service._expTimeChanged = false;
                     }
                 }
-
-                /** Commented because accelerometer is deficient - control is impossible
+                
                 if (_service._bStabilizationActive) 
                     startController();
                 else
@@ -243,7 +231,7 @@ namespace SatelliteServer
                     // stop controller thread if it was launched
                     stopController();
                     // place here the code for controlling the manuallythe servo
-                }    **/
+                }
             }
 
             _logger.log("Server main loop has ended");
