@@ -11,7 +11,7 @@ namespace SatelliteServer
         private ServiceHost _host; /** Host object representing the host of the service */
 
         private CameraDriver _cameraDriver; /** The driver of the camera */
-        private const double DEF_FPS = 5.0, DEF_EXP_TIME = 100.0; /** default camera parameters */
+        private const double DEF_FPS = 15.0, DEF_EXP_TIME = 10.0; /** default camera parameters */
         private int _hWind, _hPbox; /** Handles */
         private ServoDriver _servoDriver; /** The driver of the servo */
         private Um6Driver _um6Driver; /** Driver of the sensors */
@@ -230,7 +230,7 @@ namespace SatelliteServer
                 {
                     // stop controller thread if it was launched
                     stopController();
-                    // place here the code for controlling the manuallythe servo
+                    // place here the code for controlling manually the servo
                 }
             }
 

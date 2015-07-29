@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.ServiceModel;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Threading;
 using System.IO;
-using System.Collections.Concurrent;
 
 namespace SatelliteServer
 {

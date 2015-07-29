@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using SatelliteServer;
 
@@ -10,10 +7,12 @@ namespace SatelliteClient
     class OrientationFetcher : SatelliteServer.BaseThread
     {
         private int DEFAULT_SERVO_POS = 6000;
+        private double DEFAULT_FPS = 15.0;
+        private double DEFAULT_EXP = 10.0;
         private int _goal_pitch, _goal_yaw; /** Objective servo angles */
         private bool _stabilizeMode, _stabilizeModeGoal; /** True for the stabilize mode */
         private ExponentialAverage _roll, _pitch, _yaw; /** Euler angles as moving averages */
-        private MovingAverageInt _servoPitch, _servoYaw; /** Servo angles as moving averages */
+        private int _servoPitch, _servoYaw;
         private const int MOVING_AVERAGE_WINDOW = 10;
         private const double ALPHA = 0.75;
 
@@ -25,18 +24,18 @@ namespace SatelliteClient
         private double _fps, _expTime;
         private double _goalFps, _goalExpTime;
 
-        private SatelliteServer.ISatService _satService; /** Operation contract service */
+        private ISatService _satService; /** Operation contract service */
         private const double SERVO_EQUAL_THRESHOLD = 0.001;
 
-        public OrientationFetcher(SatelliteServer.ISatService service)
+        public OrientationFetcher(ISatService service)
         {
             _satService = service;
             _goal_pitch = _goal_yaw = DEFAULT_SERVO_POS;
-            _fps = _goalFps = 5.0;
-            _Ki = _Kp = _KpGoal = _KiGoal = 0;
-            _expTime = _goalExpTime = 100.0;
-            _servoPitch = new MovingAverageInt(MOVING_AVERAGE_WINDOW, DEFAULT_SERVO_POS);
-            _servoYaw = new MovingAverageInt(MOVING_AVERAGE_WINDOW, DEFAULT_SERVO_POS);
+            _fps = _goalFps = DEFAULT_FPS;
+            _Ki = _KiGoal = 0;
+            _Kp = _KpGoal = 0.2;
+            _expTime = _goalExpTime = DEFAULT_EXP;
+            _servoPitch = _servoYaw = DEFAULT_SERVO_POS;
             _roll = new ExponentialAverage(ALPHA);
             _pitch = new ExponentialAverage(ALPHA);
             _yaw = new ExponentialAverage(ALPHA);
@@ -49,8 +48,8 @@ namespace SatelliteClient
         public double GetRoll() { lock (this) { return _roll.get(); } }
 
         // Servo angles setters and getters
-        public int GetServoPitch() { return _servoPitch.get(); }
-        public int GetServoYaw() { return _servoYaw.get(); }
+        public int GetServoPitch() { return _servoPitch; }
+        public int GetServoYaw() { return _servoYaw; }
 
         public double GetKi() { return _Ki; }
         public double GetKp() { return _Kp; }
@@ -100,14 +99,14 @@ namespace SatelliteClient
 
                     lock (this)
                     {
-                        _roll.push(euler[0]);
-                        _pitch.push(euler[1]);
-                        _yaw.push(euler[2]);
+                        _pitch.push(euler[0]);
+                        _yaw.push(euler[1]);
+                        _roll.push(euler[2]);
                     }
 
                     // update servo angles         
-                    _servoPitch.push(data.servoPitch);
-                    _servoYaw.push(data.servoYaw);
+                    _servoPitch = data.servoPitch;
+                    _servoYaw = data.servoYaw;
 
                     bool goal = _stabilizeModeGoal, curr = _stabilizeMode, server = data.stabActive;
                     updateStabMode(goal, curr, server);
@@ -120,10 +119,10 @@ namespace SatelliteClient
                         orders.setBoolProp(goal, CamData.STAB_ACTIVE);
 
                     // if servo angles invalid : send request for changing them
-                    if (Math.Abs(_servoPitch.getLast() - _goal_pitch) > SERVO_EQUAL_THRESHOLD && !_stabilizeMode)
+                    if (Math.Abs(_servoPitch - _goal_pitch) > SERVO_EQUAL_THRESHOLD && !_stabilizeMode)
                         orders.setIntProp(_goal_pitch, CamData.SERVO_PITCH);
 
-                    if (Math.Abs(_servoYaw.getLast() - _goal_yaw) > SERVO_EQUAL_THRESHOLD && !_stabilizeMode)
+                    if (Math.Abs(_servoYaw - _goal_yaw) > SERVO_EQUAL_THRESHOLD && !_stabilizeMode)
                         orders.setIntProp(_goal_yaw, CamData.SERVO_YAW);
 
                     if (Math.Abs(_KiGoal - _Ki) > EQUAL_THRESHOLD)

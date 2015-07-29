@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO.Ports;
-using System.Threading;
 
 namespace SatelliteServer
 {
@@ -18,9 +14,9 @@ namespace SatelliteServer
         /// </summary>
         public double[] Angles { get { lock (this) { return _dAngles; } } }
 
-        public Um6Driver(string portName,int baudRate)
+        public Um6Driver(string portName, int baudRate)
         {
-            _port = new SerialPort(portName,baudRate,Parity.None,8,StopBits.One);
+            _port = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One);
             _port.Handshake = Handshake.None;
             _port.ReadTimeout = 500;
             _port.WriteTimeout = 500;
@@ -67,7 +63,7 @@ namespace SatelliteServer
                 int nAddress = -1;
 
                 //find the start of the packet
-                for (int ii = 0; ii < nBytes-4; ii++)
+                for (int ii = 0; ii < nBytes - 4; ii++)
                 {
                     if (buffer[ii + 0] == 's' && buffer[ii + 1] == 'n' && buffer[ii + 2] == 'p')
                     {
@@ -75,8 +71,8 @@ namespace SatelliteServer
                         bValid = true;
                     }
                 }
-                    
-                
+
+
                 if (bValid == true)
                 {
                     //augment the number of bytes read
@@ -86,11 +82,11 @@ namespace SatelliteServer
                     nStartOffset = 0;
 
                     //now read the length byte
-                    bData = (buffer[nStartOffset+3] & 0x80) != 0;
+                    bData = (buffer[nStartOffset + 3] & 0x80) != 0;
                     if (bData)
                     {
-                        bBatch = (buffer[nStartOffset+3] & 0x40) != 0;
-                        nDataLength = (((int)buffer[nStartOffset+3] >> 2) & 0x0F);
+                        bBatch = (buffer[nStartOffset + 3] & 0x40) != 0;
+                        nDataLength = (((int)buffer[nStartOffset + 3] >> 2) & 0x0F);
                         if (bBatch)
                         {
                             nDataLength *= 4;
@@ -113,7 +109,7 @@ namespace SatelliteServer
                     if (bData && nBytes >= nTotalLength)
                     {
                         //extract the data
-                            //Console.WriteLine("Received " + nDataLength.ToString() + " data bytes at address " + nAddress.ToString() + ". Discarding " + (nBytes - nTotalLength).ToString() + " bytes.");
+                        //Console.WriteLine("Received " + nDataLength.ToString() + " data bytes at address " + nAddress.ToString() + ". Discarding " + (nBytes - nTotalLength).ToString() + " bytes.");
 
                         //now depending on the address, set some things
                         switch (nAddress)
@@ -121,7 +117,7 @@ namespace SatelliteServer
                             case Address_Euler_Phi_Theta:
                                 //set the euler angles
                                 byte[] reg1 = buffer.Skip(nStartOffset + 5).Take(4).ToArray();
-                                byte[] reg2 = buffer.Skip(nStartOffset + 5+4).Take(4).ToArray();
+                                byte[] reg2 = buffer.Skip(nStartOffset + 5 + 4).Take(4).ToArray();
                                 Array.Reverse(reg1);
                                 Array.Reverse(reg2);
                                 int nRoll = BitConverter.ToInt16(reg1, 2);
@@ -130,21 +126,21 @@ namespace SatelliteServer
                                 lock (this)
                                 {
                                     //Take position of sensor into account
-									//Here it is configurated to be behind the camera, yaw opposed to the direction of the camera
-									//pitch and roll switched
+                                    //Here it is configurated to be behind the camera, yaw opposed to the direction of the camera
+                                    //pitch and roll switched
                                     double[,] transfer = new double[,] { {0, 1, 0},
                                                                             {1, 0, 0},
                                                                             {0, 0, 1} };
-                                    double[] b = new double[] {(double)nRoll * Angle_Coefficient, 
+                                    double[] b = new double[] {(double)nRoll * Angle_Coefficient,
                                                                 (double)nPitch * Angle_Coefficient,
                                                                 (double)nYaw * Angle_Coefficient};
-                                       
+
                                     //Roll
-                                    _dAngles[0] = transfer[0, 0]*b[0] + transfer[0, 1]*b[1] + transfer[0, 2]*b[2];
+                                    _dAngles[0] = transfer[0, 0] * b[0] + transfer[0, 1] * b[1] + transfer[0, 2] * b[2];
                                     //Pitch
-                                    _dAngles[1] = transfer[1, 0]*b[0] + transfer[1, 1]*b[1] + transfer[1, 2]*b[2];
+                                    _dAngles[1] = transfer[1, 0] * b[0] + transfer[1, 1] * b[1] + transfer[1, 2] * b[2];
                                     //Yaw
-                                    _dAngles[2] = transfer[2, 0]*b[0] + transfer[2, 1]*b[1] + transfer[2, 2]*b[2];
+                                    _dAngles[2] = transfer[2, 0] * b[0] + transfer[2, 1] * b[1] + transfer[2, 2] * b[2];
                                 }
 
                                 //Console.WriteLine("Received euler angles: " + _dAngles[0] + " " + _dAngles[1] + " " + _dAngles[2]);

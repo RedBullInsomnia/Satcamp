@@ -19,8 +19,8 @@ namespace SatelliteClient
         private OrientationFetcher _orientation_fetcher; // fetches the angle data + control parameters
         private FrameFetcher _frame_fetcher; // fetched the frames 
 
-        private const double _defKi = 0.0, _defKp = 0.0;
-        private const double _defFps = 5.0, _defExpTime = 100.0;
+        private const double _defKi = 0.0, _defKp = 0.2;
+        private const double _defFps = 15.0, _defExpTime = 10.0;
 
         public Window()
         {
@@ -197,9 +197,17 @@ namespace SatelliteClient
             this.BeginInvoke(new Action(() =>
             {
                 if (stabilizeCb.Checked)
+                { 
                     _orientation_fetcher.SetStabilize();
+                    yawTrackBar.Enabled = false;
+                    pitchTrackBar.Enabled = false;
+                }
                 else
+                {
                     _orientation_fetcher.UnsetStabilize();
+                    yawTrackBar.Enabled = true;
+                    pitchTrackBar.Enabled = true;
+                }
             }));
         }
 
@@ -346,7 +354,7 @@ namespace SatelliteClient
                     } 
                     catch (Exception) 
                     {
-                        MessageBox.Show("Invalid frame rate : floating point number in [3.0,20.0] expected");
+                        MessageBox.Show("Invalid frame rate : floating point number in [3.0, 20.0] expected");
                     }
                 }));
             }
@@ -381,7 +389,7 @@ namespace SatelliteClient
             An excepion is thrown if the double cannot be extracted */
         private static double ReadDouble(TextBox box, double low, double high)
         {
-            string strVal = box.Text.Replace(".", ",");
+            string strVal = box.Text.Replace(",", ".");
             double val = Double.Parse(strVal);
 
             if(val < low || val > high)

@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2012 for Web
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatelliteServer", "SatelliteServer.csproj", "{B2982F78-266C-4933-8902-D9686D810F8D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatelliteClient", "..\SatelliteClient\SatelliteClient.csproj", "{779E8CDE-8DC3-4DD6-869A-A807E33DA71E}"

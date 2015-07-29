@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Window));
             this.groupBoxOrientation = new System.Windows.Forms.GroupBox();
             this.tbYaw = new System.Windows.Forms.TextBox();
             this.tbPitch = new System.Windows.Forms.TextBox();
@@ -465,7 +466,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 687);
+            this.ClientSize = new System.Drawing.Size(784, 688);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.savePathBox);
@@ -477,10 +478,11 @@
             this.Controls.Add(this.pictureBox);
             this.Controls.Add(this.groupBoxServos);
             this.Controls.Add(this.groupBoxOrientation);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MinimumSize = new System.Drawing.Size(800, 726);
             this.Name = "Window";
-            this.Text = "Client";
+            this.Text = "ClientApp";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Window_FormClosing);
             this.Load += new System.EventHandler(this.Window_Load);
             this.groupBoxOrientation.ResumeLayout(false);

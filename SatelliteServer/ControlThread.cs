@@ -51,7 +51,7 @@ namespace SatelliteServer
                     _Ki = _satService._ki;
 
                     pid();
-                    Thread.Sleep(1000);
+                    Thread.Sleep(2);
                 }
             } catch(Exception e) {
                 Logger.instance().log("Error occurred during the execution of the control thread : " + e.Message);
@@ -74,27 +74,28 @@ namespace SatelliteServer
                                 + (int)(_perrInt * _Ki * RATIO_ANGLE_SERVO_POS);
 
             Logger.instance().log(" [PITCH] Error         : " + pitch_error);
-            Logger.instance().log(" [PITCH] Integral      : " + _perrInt);
+            //Logger.instance().log(" [PITCH] Integral      : " + _perrInt);
             Logger.instance().log(" [PITCH] Curr pos      : " + _satService._servoPos[Server.PITCH_SERVO_ADDR]);
             Logger.instance().log(" [PITCH] Error contr.  : " + (int)(pitch_error * _Kp * RATIO_ANGLE_SERVO_POS));
-            Logger.instance().log(" [PITCH] Integ. contr. : " + (int)(_perrInt * _Ki * RATIO_ANGLE_SERVO_POS));
+            //Logger.instance().log(" [PITCH] Integ. contr. : " + (int)(_perrInt * _Ki * RATIO_ANGLE_SERVO_POS));
             
             // Calculate the error on the yaw axis
             double yaw_error = _um6Driver.Angles[2] - _yawStabAngle;
             _yerrInt += yaw_error;
 
             int yawVal = _satService._servoPos[Server.YAW_SERVO_ADDR]
-                                + (int)(yaw_error * _Kp * RATIO_ANGLE_SERVO_POS) 
+                                + (int)(yaw_error * _Kp * RATIO_ANGLE_SERVO_POS)
                                 + (int)(_yerrInt * _Ki * RATIO_ANGLE_SERVO_POS);
 
             Logger.instance().log(" [YAW] Error         : " + yaw_error);
-            Logger.instance().log(" [YAW] Integral      : " + _yerrInt);
+            //Logger.instance().log(" [YAW] Integral      : " + _yerrInt);
             Logger.instance().log(" [YAW] Curr pos      : " + _satService._servoPos[Server.YAW_SERVO_ADDR]);
             Logger.instance().log(" [YAW] Error contr.  : " + (int)(yaw_error * _Kp * RATIO_ANGLE_SERVO_POS));
-            Logger.instance().log(" [YAW] Integ. contr. : " + (int)(_yerrInt * _Ki * RATIO_ANGLE_SERVO_POS));
+            //Logger.instance().log(" [YAW] Integ. contr. : " + (int)(_yerrInt * _Ki * RATIO_ANGLE_SERVO_POS));
 
             // send orders to the servos
             _servoDriver.SetServo(Server.PITCH_SERVO_ADDR, (ushort) clamp(pitchVal, SERVO_MAX_POS, SERVO_MIN_POS));
+            Thread.Sleep(1);
             _servoDriver.SetServo(Server.YAW_SERVO_ADDR, (ushort) clamp(yawVal, SERVO_MAX_POS, SERVO_MIN_POS));
 
             Logger.instance().log("Correction (pitch, yaw) : (" + pitchVal + ", " + yawVal + ")");
@@ -104,8 +105,7 @@ namespace SatelliteServer
         {
             if (a < min)
                 a = min;
-
-            if (a > max)
+            else if (a > max)
                 a = max;
 
             return a;
