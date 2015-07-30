@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Collections.Concurrent;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -15,14 +10,14 @@ namespace SatelliteClient
     {
         private SatelliteServer.ISatService _satService; /** Service for capturing images */
         private PictureBox _pBox; /** The picture box in which must be displayed the image */
-       
+
         /** Data and objects to compute the frame rate */
-        private int _frameCnt; 
+        private int _frameCnt;
         private MovingAverageDouble _frameRate;
         private System.Timers.Timer _frameRateTimer;
 
         /** Data and objects for saving frames on disk */
-        private bool _saveNext; 
+        private bool _saveNext;
         private string _savePath;
 
         public FrameFetcher(SatelliteServer.ISatService service, PictureBox pBox)
@@ -39,15 +34,17 @@ namespace SatelliteClient
 
         private void computeFrameRate(object sender, System.Timers.ElapsedEventArgs e)
         {
-            lock (this) {
-                _frameRate.push((double) _frameCnt); 
+            lock (this)
+            {
+                _frameRate.push((double)_frameCnt);
                 _frameCnt = 0;
             }
         }
 
         public double getFrameRate()
         {
-            lock (this) {
+            lock (this)
+            {
                 return _frameRate.get();
             }
         }
@@ -61,7 +58,7 @@ namespace SatelliteClient
         {
             _savePath = path;
         }
-        
+
         /**
          * While enabled request an image from the operation contract interface and store in a concurrent queue
          */
@@ -78,8 +75,8 @@ namespace SatelliteClient
 
                     /**
                      * The image saving was placed here mainly to keep code simple
-                     */ 
-                    if (_saveNext) 
+                     */
+                    if (_saveNext)
                     {
                         image.Save(_savePath + "/" + getFileName(), System.Drawing.Imaging.ImageFormat.Png);
                         _saveNext = false;
@@ -87,10 +84,12 @@ namespace SatelliteClient
 
                     _pBox.Image = image;
 
-                    lock(this) { ++_frameCnt; }
+                    lock (this) { ++_frameCnt; }
                 }
                 _frameRateTimer.Enabled = false;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Console.Error.Write("Exception in Frame Fetcher : {0}\n", e.Message);
             }
         }

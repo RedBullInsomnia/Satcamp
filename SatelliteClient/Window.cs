@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System.Timers;
 using System.ServiceModel;
 using System.IO;
+using SatelliteServer;
 
 namespace SatelliteClient
 {
@@ -11,16 +12,13 @@ namespace SatelliteClient
         System.Timers.Timer _updateTimer; // for updating the various text box and labels of the screen
 
         /** Service objects */
-        ChannelFactory<SatelliteServer.ISatService> _scf;
-        SatelliteServer.ISatService _satService;
-        private const string SERVICE_IP = "192.168.1.96";
+        ChannelFactory<ISatService> _scf;
+        ISatService _satService;
+        //private const string SERVICE_IP = "192.168.1.96";
 
         /** Threads running concurrently to the windows */
         private OrientationFetcher _orientation_fetcher; // fetches the angle data + control parameters
         private FrameFetcher _frame_fetcher; // fetched the frames 
-
-        private const double _defKi = 0.0, _defKp = 0.2;
-        private const double _defFps = 15.0, _defExpTime = 10.0;
 
         public Window()
         {
@@ -45,7 +43,6 @@ namespace SatelliteClient
                 try { _scf.Close(); }
                 catch (Exception) { }
             }
-                
 
             NetTcpBinding binding = new NetTcpBinding();
             binding.MaxReceivedMessageSize = 20000000;
@@ -53,9 +50,9 @@ namespace SatelliteClient
             binding.MaxBufferSize = 20000000;
             binding.Security.Mode = SecurityMode.None;
             Console.WriteLine("Init sat service");
-            _scf = new ChannelFactory<SatelliteServer.ISatService>(
+            _scf = new ChannelFactory<ISatService>(
                         binding,
-                        "net.tcp://" + SERVICE_IP + ":8000");
+                        "net.tcp://" + Constants.DEFAULT_IP + ":8000");
             _satService = _scf.CreateChannel();
             Console.WriteLine("Sat service ok");
         }
@@ -97,6 +94,7 @@ namespace SatelliteClient
 
                 connectBn.Enabled = false;
                 disconnectBn.Enabled = true;
+                IPAdress.Enabled = false;
                 stabilizeCb.Enabled = true; // to enable/disable the controller server side
 
                 _orientation_fetcher.Start();
@@ -167,8 +165,12 @@ namespace SatelliteClient
         {
             Invoke(new Action(() =>
             {
-                yawTrackBar.Value = 6000;
-                pitchTrackBar.Value = 6000;
+                yawTrackBar.Value = pitchTrackBar.Value = Constants.DEFAULT_SERVO_POS;
+                kpTextBox.Text = Constants.DEF_KP.ToString();
+                kiTextBox.Text = Constants.DEF_KI.ToString();
+                fpsTextBox.Text = Constants.DEF_FPS.ToString();
+                expTimeTextBox.Text = Constants.DEF_EXP_TIME.ToString();
+                IPAdress.Text = Constants.DEFAULT_IP;
                 tbRoll.Clear();
                 tbPitch.Clear();
                 tbYaw.Clear();
@@ -197,7 +199,7 @@ namespace SatelliteClient
             this.BeginInvoke(new Action(() =>
             {
                 if (stabilizeCb.Checked)
-                { 
+                {
                     _orientation_fetcher.SetStabilize();
                     yawTrackBar.Enabled = false;
                     pitchTrackBar.Enabled = false;
@@ -337,24 +339,26 @@ namespace SatelliteClient
 
         private void defaultKParamsBn_Click(object sender, EventArgs e)
         {
-            Invoke(new Action(() => {
-                kiTextBox.Text = "" + _defKi;
-                kpTextBox.Text = "" + _defKp;
+            Invoke(new Action(() =>
+            {
+                kiTextBox.Text = "" + Constants.DEF_KI;
+                kpTextBox.Text = "" + Constants.DEF_KP;
             }));
         }
 
         private void fpsTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter) 
+            if (e.KeyCode == Keys.Enter)
             {
-                Invoke(new Action(() => {
-                    try 
+                Invoke(new Action(() =>
+                {
+                    try
                     {
-                        _orientation_fetcher.SetFps(ReadDouble(fpsTextBox, 3.0, 20.0));
-                    } 
-                    catch (Exception) 
+                        _orientation_fetcher.SetFps(ReadDouble(fpsTextBox, Constants.MIN_FPS, Constants.MAX_FPS));
+                    }
+                    catch (Exception)
                     {
-                        MessageBox.Show("Invalid frame rate : floating point number in [3.0, 20.0] expected");
+                        MessageBox.Show("Invalid frame rate : floating point number in [" + Constants.MIN_FPS + ", " + Constants.MAX_FPS + "] expected");
                     }
                 }));
             }
@@ -362,26 +366,28 @@ namespace SatelliteClient
 
         private void expTimeTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter) 
+            if (e.KeyCode == Keys.Enter)
             {
-                Invoke(new Action(() => {
-                    try 
+                Invoke(new Action(() =>
+                {
+                    try
                     {
-                        _orientation_fetcher.SetExpTime(ReadDouble(expTimeTextBox, 1.0, 220.0));
-                    } 
-                    catch (Exception) 
+                        _orientation_fetcher.SetExpTime(ReadDouble(expTimeTextBox, Constants.MIN_EXP_TIME, Constants.MAX_EXP_TIME));
+                    }
+                    catch (Exception)
                     {
-                        MessageBox.Show("Invalid exposure time : floating point number in [1.0, 220.0] expected");
-                    }                 
+                        MessageBox.Show("Invalid exposure time : floating point number in [" + Constants.MIN_EXP_TIME + ", " + Constants.MAX_EXP_TIME + "] expected");
+                    }
                 }));
             }
         }
 
         private void defCamParams_Click(object sender, EventArgs e)
         {
-            Invoke(new Action(() => {
-                fpsTextBox.Text = "" + _defFps;
-                expTimeTextBox.Text = "" + _defExpTime;
+            Invoke(new Action(() =>
+            {
+                fpsTextBox.Text = "" + Constants.DEF_FPS;
+                expTimeTextBox.Text = "" + Constants.DEF_EXP_TIME;
             }));
         }
 
@@ -392,7 +398,7 @@ namespace SatelliteClient
             string strVal = box.Text.Replace(",", ".");
             double val = Double.Parse(strVal);
 
-            if(val < low || val > high)
+            if (val < low || val > high)
                 throw new Exception();
 
             box.Text = "" + val;

@@ -1,4 +1,6 @@
-﻿namespace SatelliteClient
+﻿using SatelliteServer;
+
+namespace SatelliteClient
 {
     partial class Window
     {
@@ -63,6 +65,7 @@
             this.expTimeTextBox = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
+            this.IPAdress = new System.Windows.Forms.TextBox();
             this.groupBoxOrientation.SuspendLayout();
             this.groupBoxServos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.yawTrackBar)).BeginInit();
@@ -266,7 +269,7 @@
             // connectBn
             // 
             this.connectBn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.connectBn.Location = new System.Drawing.Point(9, 654);
+            this.connectBn.Location = new System.Drawing.Point(115, 654);
             this.connectBn.Margin = new System.Windows.Forms.Padding(2);
             this.connectBn.Name = "connectBn";
             this.connectBn.Size = new System.Drawing.Size(84, 24);
@@ -290,7 +293,7 @@
             // disconnectBn
             // 
             this.disconnectBn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.disconnectBn.Location = new System.Drawing.Point(99, 654);
+            this.disconnectBn.Location = new System.Drawing.Point(203, 654);
             this.disconnectBn.Margin = new System.Windows.Forms.Padding(2);
             this.disconnectBn.Name = "disconnectBn";
             this.disconnectBn.Size = new System.Drawing.Size(84, 24);
@@ -462,11 +465,19 @@
             this.label10.TabIndex = 0;
             this.label10.Text = "Exp. time";
             // 
+            // IPAdress
+            // 
+            this.IPAdress.Location = new System.Drawing.Point(10, 657);
+            this.IPAdress.Name = "IPAdress";
+            this.IPAdress.Size = new System.Drawing.Size(100, 20);
+            this.IPAdress.TabIndex = 14;
+            // 
             // Window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 688);
+            this.Controls.Add(this.IPAdress);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.savePathBox);
@@ -537,7 +548,7 @@
         private System.Windows.Forms.TextBox expTimeTextBox;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
-
+        private System.Windows.Forms.TextBox IPAdress;
     }
 }
 

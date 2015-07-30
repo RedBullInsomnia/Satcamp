@@ -114,8 +114,8 @@ namespace SatelliteServer
         public CamData GetCamData()
         {
             CamData data = new CamData();
-            data.setIntProp(_servoPos[Server.PITCH_SERVO_ADDR], CamData.SERVO_PITCH);
-            data.setIntProp(_servoPos[Server.YAW_SERVO_ADDR], CamData.SERVO_YAW);
+            data.setIntProp(_servoPos[Constants.PITCH_SERVO_ADDR], CamData.SERVO_PITCH);
+            data.setIntProp(_servoPos[Constants.YAW_SERVO_ADDR], CamData.SERVO_YAW);
             data.setDoubleProp(_eulerAngles[0], CamData.EULER_ROLL);
             data.setDoubleProp(_eulerAngles[1], CamData.EULER_PITCH);
             data.setDoubleProp(_eulerAngles[2], CamData.EULER_YAW);
@@ -131,15 +131,15 @@ namespace SatelliteServer
         {
             if (data.propChanged[CamData.SERVO_PITCH])
             {
-                _servoPos[Server.PITCH_SERVO_ADDR] = data.servoPitch;
-                _servoChanged[Server.PITCH_SERVO_ADDR] = true;
+                _servoPos[Constants.PITCH_SERVO_ADDR] = data.servoPitch;
+                _servoChanged[Constants.PITCH_SERVO_ADDR] = true;
                 Logger.instance().log("Servo pitch set to " + data.servoPitch);
             }
 
             if(data.propChanged[CamData.SERVO_YAW])
             {
-                _servoPos[Server.YAW_SERVO_ADDR] = data.servoYaw;
-                _servoChanged[Server.YAW_SERVO_ADDR] = true;
+                _servoPos[Constants.YAW_SERVO_ADDR] = data.servoYaw;
+                _servoChanged[Constants.YAW_SERVO_ADDR] = true;
                 Logger.instance().log("Servo yaw set to " + data.servoYaw);
             }
 

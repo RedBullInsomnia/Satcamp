@@ -9,6 +9,12 @@ namespace SatelliteServer
     /// </summary>
     class Um6Driver
     {
+        private SerialPort _port;
+        private double[] _dAngles;
+        private const int Address_Euler_Phi_Theta = 0x62;
+        private const int Address_Euler_Temp = 0x76;
+        private const double Angle_Coefficient = 0.0109863;
+
         /// <summary>
         /// The euler angles parameter
         /// </summary>
@@ -153,11 +159,5 @@ namespace SatelliteServer
                 }
             }
         }
-
-        private SerialPort _port;
-        private double[] _dAngles;
-        private const int Address_Euler_Phi_Theta = 0x62;
-        private const int Address_Euler_Temp = 0x76;
-        private const double Angle_Coefficient = 0.0109863;
     }
 }

@@ -11,31 +11,17 @@ namespace SatelliteServer
         private ServiceHost _host; /** Host object representing the host of the service */
 
         private CameraDriver _cameraDriver; /** The driver of the camera */
-        private const double DEF_FPS = 15.0, DEF_EXP_TIME = 10.0; /** default camera parameters */
         private int _hWind, _hPbox; /** Handles */
-        private ServoDriver _servoDriver; /** The driver of the servo */
-        private Um6Driver _um6Driver; /** Driver of the sensors */
-
         private ThreadSafeContainer<Bitmap> _container; /** Queue in which will be stored the consecutive frames received from the camera */
-        
         private PictureBox _pBox; /** Picture box on which the image must be displayed */
         private bool _printOnPbox; /** True for sending the picture in the picture box */
 
-        private Logger _logger; /** for outputting message */
+        private ServoDriver _servoDriver; /** The driver of the servo */
+        private Um6Driver _um6Driver; /** Driver of the sensors */
 
         private ControlThread _controller; /** Thread for stabilizing the servo */
 
-        /**
-         * Information about the serial port for communicating with the sensors
-         */
-        private const string SERIAL_PORT_NAME = "COM1";
-        private const int SERIAL_PORT_BAUD_RATE = 115200;
-
-        /**
-         * Servos data
-         */
-        public const byte PITCH_SERVO_ADDR = 1;
-        public const byte YAW_SERVO_ADDR = 0;
+        private Logger _logger; /** for outputting message */
 
         /**
          * Construct the server object :
@@ -45,8 +31,8 @@ namespace SatelliteServer
          */
         public Server(long hWind, PictureBox pBox, bool printOnPbox)
         {
-            this._hWind = (int) hWind;
-            this._hPbox = (int) pBox.Handle.ToInt64();
+            this._hWind = (int)hWind;
+            this._hPbox = (int)pBox.Handle.ToInt64();
             this._pBox = pBox;
             this._printOnPbox = printOnPbox;
             this._container = new ThreadSafeContainer<Bitmap>();
@@ -117,7 +103,7 @@ namespace SatelliteServer
          */
         private void initSensors()
         {
-            _um6Driver = new Um6Driver(SERIAL_PORT_NAME, SERIAL_PORT_BAUD_RATE);
+            _um6Driver = new Um6Driver(Constants.SERIAL_PORT_NAME, Constants.SERIAL_PORT_BAUD_RATE);
             _um6Driver.Init();
             _logger.log("Sensors driver successfully initialized");
         }
@@ -134,7 +120,7 @@ namespace SatelliteServer
         /**
          * Start the controller thread  
          */
-        private void startController() 
+        private void startController()
         {
             if (_controller != null)
                 return;
@@ -173,17 +159,18 @@ namespace SatelliteServer
             _logger.log("Server main loop has started");
 
             // set default camera parameters
-            _service._frameRate = DEF_FPS;
-            _service._expTime = DEF_EXP_TIME;
-            _cameraDriver.setFps(DEF_FPS);
-            _cameraDriver.setExposureTime(DEF_EXP_TIME);
+            _service._frameRate = Constants.DEF_FPS;
+            _service._expTime = Constants.DEF_EXP_TIME;
+            _cameraDriver.setFps(Constants.DEF_FPS);
+            _cameraDriver.setExposureTime(Constants.DEF_EXP_TIME);
 
             _cameraDriver.StartVideo();
 
             while (_go && IsAlive())
             {
                 // fetch euler angles
-                lock (_um6Driver) {
+                lock (_um6Driver)
+                {
                     _service._eulerAngles[0] = _um6Driver.Angles[0]; // roll
                     _service._eulerAngles[1] = _um6Driver.Angles[1]; // pitch
                     _service._eulerAngles[2] = _um6Driver.Angles[2]; // yaw
@@ -192,17 +179,17 @@ namespace SatelliteServer
 
                 // Transfer servo modification order to the servos 
                 // do it with Pitch
-                if (_service._servoChanged[PITCH_SERVO_ADDR])
+                if (_service._servoChanged[Constants.PITCH_SERVO_ADDR])
                 {
-                    _service._servoChanged[PITCH_SERVO_ADDR] = false;
-                    _servoDriver.SetServo(PITCH_SERVO_ADDR, (ushort)_service._servoPos[PITCH_SERVO_ADDR]);
+                    _service._servoChanged[Constants.PITCH_SERVO_ADDR] = false;
+                    _servoDriver.SetServo(Constants.PITCH_SERVO_ADDR, (ushort)_service._servoPos[Constants.PITCH_SERVO_ADDR]);
                 }
 
                 // do it with Yaw
-                if (_service._servoChanged[YAW_SERVO_ADDR])
+                if (_service._servoChanged[Constants.YAW_SERVO_ADDR])
                 {
-                    _service._servoChanged[YAW_SERVO_ADDR] = false;
-                    _servoDriver.SetServo(YAW_SERVO_ADDR, (ushort)_service._servoPos[YAW_SERVO_ADDR]);
+                    _service._servoChanged[Constants.YAW_SERVO_ADDR] = false;
+                    _servoDriver.SetServo(Constants.YAW_SERVO_ADDR, (ushort)_service._servoPos[Constants.YAW_SERVO_ADDR]);
                 }
 
                 // check if camera parameters were changed
@@ -223,8 +210,8 @@ namespace SatelliteServer
                         _service._expTimeChanged = false;
                     }
                 }
-                
-                if (_service._bStabilizationActive) 
+
+                if (_service._bStabilizationActive)
                     startController();
                 else
                 {

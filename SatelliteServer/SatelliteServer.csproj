@@ -93,6 +93,7 @@
     <Compile Include="BaseThread.cs" />
     <Compile Include="CamData.cs" />
     <Compile Include="ConsoleLogger.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="ControlThread.cs" />
     <Compile Include="Drivers\CameraDriver.cs" />
     <Compile Include="ISatService.cs" />

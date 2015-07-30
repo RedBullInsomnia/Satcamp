@@ -4,11 +4,8 @@ using SatelliteServer;
 
 namespace SatelliteClient
 {
-    class OrientationFetcher : SatelliteServer.BaseThread
+    class OrientationFetcher : BaseThread
     {
-        private int DEFAULT_SERVO_POS = 6000;
-        private double DEFAULT_FPS = 15.0;
-        private double DEFAULT_EXP = 10.0;
         private int _goal_pitch, _goal_yaw; /** Objective servo angles */
         private bool _stabilizeMode, _stabilizeModeGoal; /** True for the stabilize mode */
         private ExponentialAverage _roll, _pitch, _yaw; /** Euler angles as moving averages */
@@ -30,12 +27,12 @@ namespace SatelliteClient
         public OrientationFetcher(ISatService service)
         {
             _satService = service;
-            _goal_pitch = _goal_yaw = DEFAULT_SERVO_POS;
-            _fps = _goalFps = DEFAULT_FPS;
+            _goal_pitch = _goal_yaw = Constants.DEFAULT_SERVO_POS;
+            _fps = _goalFps = Constants.DEF_FPS;
             _Ki = _KiGoal = 0;
             _Kp = _KpGoal = 0.2;
-            _expTime = _goalExpTime = DEFAULT_EXP;
-            _servoPitch = _servoYaw = DEFAULT_SERVO_POS;
+            _expTime = _goalExpTime = Constants.DEF_EXP_TIME;
+            _servoPitch = _servoYaw = Constants.DEFAULT_SERVO_POS;
             _roll = new ExponentialAverage(ALPHA);
             _pitch = new ExponentialAverage(ALPHA);
             _yaw = new ExponentialAverage(ALPHA);
