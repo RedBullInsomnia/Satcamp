@@ -22,6 +22,7 @@
          */
         public const byte PITCH_SERVO_ADDR = 1, YAW_SERVO_ADDR = 0;
         public const double DEF_KI = 0.0, DEF_KP = 0.2;
+        public const double MIN_KP = 0.0, MAX_KP = 1.0;
         public const ushort DEFAULT_SERVO_POS = 6000, MAX_SERVO_POS = 8000, MIN_SERVO_POS = 4000;
 
         /**

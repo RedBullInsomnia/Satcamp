@@ -31,18 +31,14 @@ namespace SatelliteClient
 
             _updateTimer = new System.Timers.Timer(50);
             _updateTimer.Elapsed += _updateTimer_Elapsed;
-            serviceConnect();
+            //serviceConnect();
             _orientation_fetcher = new OrientationFetcher(_satService);
             _frame_fetcher = new FrameFetcher(_satService, pictureBox);
         }
 
         private void serviceConnect()
         {
-            if (_scf != null)
-            {
-                try { _scf.Close(); }
-                catch (Exception) { }
-            }
+            serviceDisconnect();
 
             NetTcpBinding binding = new NetTcpBinding();
             binding.MaxReceivedMessageSize = 20000000;
@@ -52,9 +48,18 @@ namespace SatelliteClient
             Console.WriteLine("Init sat service");
             _scf = new ChannelFactory<ISatService>(
                         binding,
-                        "net.tcp://" + Constants.DEFAULT_IP + ":8000");
+                        "net.tcp://" + IPAdress.Text + ":8000");
             _satService = _scf.CreateChannel();
             Console.WriteLine("Sat service ok");
+        }
+
+        private void serviceDisconnect()
+        {
+            if (_scf != null)
+            {
+                try { _scf.Close(); }
+                catch (Exception) { }
+            }
         }
 
         void _updateTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -82,6 +87,7 @@ namespace SatelliteClient
                 // try to ping the server
                 try
                 {
+                    serviceConnect();
                     _satService.NamedPing("Hello world !");
                 }
                 catch (Exception)
@@ -139,13 +145,14 @@ namespace SatelliteClient
             _orientation_fetcher = new OrientationFetcher(_satService);
             _frame_fetcher = new FrameFetcher(_satService, pictureBox);
 
-            if (_scf.State == CommunicationState.Faulted || serviceIsFaulted(_satService))
-                serviceConnect();
-
+            /*if (_scf != null && (_scf.State == CommunicationState.Faulted || serviceIsFaulted(_satService)))
+                serviceDisconnect();*/
+            serviceDisconnect();
+            
             clearUI();
         }
 
-        private bool serviceIsFaulted(SatelliteServer.ISatService service)
+        private bool serviceIsFaulted(ISatService service)
         {
             try
             {
@@ -314,7 +321,7 @@ namespace SatelliteClient
         {
             try
             {
-                setKParam(ReadDouble(paramTextBox, 0.0, 1.0), ki);
+                setKParam(ReadDouble(paramTextBox, Constants.MIN_KP, Constants.MAX_KP), ki);
                 this.ActiveControl = null;
             }
             catch (Exception)
