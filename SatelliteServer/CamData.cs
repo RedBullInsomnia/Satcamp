@@ -32,10 +32,10 @@ namespace SatelliteServer
         public double eulerRoll { get; set; }
 
         [DataMember]
-        public int servoPitch { get; set; }
+        public ushort servoPitch { get; set; }
 
         [DataMember]
-        public int servoYaw { get; set; }
+        public ushort servoYaw { get; set; }
 
         [DataMember]
         public double fps { get; set; }
@@ -101,7 +101,7 @@ namespace SatelliteServer
             modifyProp(prop);
         }
 
-        public void setIntProp(int val, int prop) {
+        public void setIntProp(ushort val, int prop) {
             switch(prop) {
                 case SERVO_PITCH :
                     servoPitch = val;

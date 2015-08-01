@@ -6,7 +6,7 @@ namespace SatelliteClient
 {
     class OrientationFetcher : BaseThread
     {
-        private int _goal_pitch, _goal_yaw; /** Objective servo angles */
+        private ushort _goal_pitch, _goal_yaw; /** Objective servo angles */
         private bool _stabilizeMode, _stabilizeModeGoal; /** True for the stabilize mode */
         private ExponentialAverage _roll, _pitch, _yaw; /** Euler angles as moving averages */
         private int _servoPitch, _servoYaw;
@@ -51,8 +51,8 @@ namespace SatelliteClient
         public double GetKi() { return _Ki; }
         public double GetKp() { return _Kp; }
 
-        public void SetServoPitch(int goal_pitch) { _goal_pitch = goal_pitch; }
-        public void SetServoYaw(int goal_yaw) { _goal_yaw = goal_yaw; }
+        public void SetServoPitch(ushort goal_pitch) { _goal_pitch = goal_pitch; }
+        public void SetServoYaw(ushort goal_yaw) { _goal_yaw = goal_yaw; }
 
         public void SetKi(double Ki) { _KiGoal = Ki; }
         public void SetKp(double Kp) { _KpGoal = Kp; }
@@ -152,7 +152,7 @@ namespace SatelliteClient
                     Thread.Sleep(200);
                 }
             } catch(Exception e) {
-                Console.Error.Write("Error occurred in OrientatinFetcher : {0}", e.Message);
+                Console.Error.Write("Error occurred in OrientationFetcher : {0}", e.Message);
             }
 
             Console.WriteLine("Leave orientation fetcher");

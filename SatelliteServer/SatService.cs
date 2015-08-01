@@ -20,7 +20,7 @@ namespace SatelliteServer
         private EncoderParameters _jpegEncoderParameters;
 
         public double[] _eulerAngles;
-        public int[] _servoPos;
+        public ushort[] _servoPos;
         public double _ki, _kp;
         public bool _kiChanged, _kpChanged;
         public bool[] _servoChanged;
@@ -39,7 +39,7 @@ namespace SatelliteServer
 
             _bStabilizationChanged = false;
 
-            _servoPos = new int[10];
+            _servoPos = new ushort[10];
             _servoChanged = new bool[10];
             for (int ii = 0; ii < 10; ii++)
             {
@@ -77,7 +77,7 @@ namespace SatelliteServer
             return _kp;
         }
 
-        public void SetServoPos(int channel, int val)
+        public void SetServoPos(int channel, ushort val)
         {
             Logger.instance().log("Servo on channel '" + channel + "' set to position " + val);
             _servoPos[channel] = val;

@@ -32,11 +32,7 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Text;
+
 
 /// <summary>
 /// Zusammenfassung für uc480.

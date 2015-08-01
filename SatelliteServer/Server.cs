@@ -125,7 +125,7 @@ namespace SatelliteServer
             if (_controller != null)
                 return;
 
-            _controller = new ControlThread(_um6Driver, _servoDriver, _service, _um6Driver.Angles[1], _um6Driver.Angles[2]);
+            _controller = new ControlThread(_um6Driver, _servoDriver, _service, _um6Driver.Pitch, _um6Driver.Yaw);
             _controller.Start();
         }
 
@@ -171,11 +171,10 @@ namespace SatelliteServer
                 // fetch euler angles
                 lock (_um6Driver)
                 {
-                    _service._eulerAngles[0] = _um6Driver.Angles[0]; // roll
-                    _service._eulerAngles[1] = _um6Driver.Angles[1]; // pitch
-                    _service._eulerAngles[2] = _um6Driver.Angles[2]; // yaw
+                    _service._eulerAngles[0] = _um6Driver.Roll; // roll
+                    _service._eulerAngles[1] = _um6Driver.Pitch; // pitch
+                    _service._eulerAngles[2] = _um6Driver.Yaw; // yaw
                 }
-
 
                 // Transfer servo modification order to the servos 
                 // do it with Pitch

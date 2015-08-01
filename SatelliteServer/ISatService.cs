@@ -15,7 +15,7 @@ namespace SatelliteServer
         bool GetStablizationActive();
 
         [OperationContract]
-        void SetServoPos(int channel, int val);
+        void SetServoPos(int channel, ushort val);
 
         [OperationContract]
         int GetServoPos(int channel);

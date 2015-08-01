@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Drawing;
 
@@ -36,8 +32,8 @@ namespace SatelliteServer
             m_RenderMode = uc480.IS_RENDER_NORMAL;
 
             // default parameters
-            expTime = 10.0; // ms
-            fps = 5.0; // frame / s
+            expTime = Constants.DEF_EXP_TIME; // ms
+            fps = Constants.DEF_FPS; // frame / s
 	    }
 
         public bool Capture()
@@ -88,30 +84,7 @@ namespace SatelliteServer
             int y = 0;
             unsafe
             {
-                int nAOISupported = -1;
-                IntPtr pnAOISupported = (IntPtr)((uint*)&nAOISupported);
-                bool bAOISupported = true;
-
-                // check if an arbitrary AOI is supported
-                //if (m_uc480.ImageFormat(uc480.IMGFRMT_CMD_GET_ARBITRARY_AOI_SUPPORTED, pnAOISupported, 4) == uc480.IS_SUCCESS)
-                //{
-                //    bAOISupported = (nAOISupported != 0);
-                //}
-
-                // If an arbitrary AOI is supported -> take maximum sensor size
-                if (bAOISupported)
-                {
-                    x = 800;// sensorInfo.nMaxWidth;
-                    y = 600;// sensorInfo.nMaxHeight;
-                }
-                // Take the image size of the current image format
-                else
-                {
-                    x = m_uc480.SetImageSize(uc480.IS_GET_IMAGE_SIZE_X, 0);
-                    y = m_uc480.SetImageSize(uc480.IS_GET_IMAGE_SIZE_Y, 0);
-                }
-
-                m_uc480.SetImageSize(x, y);
+                m_uc480.SetImageSize(800, 600);
             }
 
             // alloc images
@@ -127,28 +100,17 @@ namespace SatelliteServer
                 m_Uc480Images[nLoop].nSeqNum = nLoop + 1;
             }
 
+            double enable = 1, zero = 0;
             m_uc480.SetColorMode(uc480.IS_SET_CM_RGB32);
             m_uc480.EnableMessage(uc480.IS_FRAME, (int)m_Hwnd);
-
-            //btnInit.Enabled = false;
-            //btnExit.Enabled = true;
-            //btnLive.Enabled = true;
-            //btnFreeze.Enabled = true;
-
-            //UpdateInfos();
-
-            //// free image
-            //if (DisplayWindow.Image != null)
-            //{
-            //    DisplayWindow.Image.Dispose();
-            //    DisplayWindow.Image = null;
-            //}
-            //m_uc480.SetExternalTrigger(uc480.IS_SET_TRIG_SOFTWARE);
-            //m_uc480.CaptureVideo(uc480.IS_WAIT);
-            // capture a single image
+            m_uc480.SetBadPixelCorrection(uc480.IS_BPC_ENABLE_SOFTWARE, 1); //trying to set bad pixel correction, needs to be studied more.
+            m_uc480.SetPixelClock(30);
+            
+            m_uc480.SetAutoParameter(uc480.IS_SET_ENABLE_AUTO_WHITEBALANCE,  ref enable, ref zero);
+            m_uc480.SetAutoParameter(uc480.IS_SET_ENABLE_AUTO_GAIN, ref enable, ref zero);
+            
             m_uc480.FreezeVideo(uc480.IS_WAIT);
             m_bIsStarted = false;
-            //Refresh();
         }
 
         unsafe public void StartVideo()
@@ -157,8 +119,6 @@ namespace SatelliteServer
                     expTime = this.expTime; // milliseconds
             m_uc480.SetFrameRate(this.fps, ref fps);
             m_uc480.SetExposureTime(this.expTime, ref expTime);
-            m_uc480.SetBadPixelCorrection(uc480.IS_BPC_ENABLE_SOFTWARE, 1); //trying to set bad pixel correction, needs to be studied more.
-            setAutoGainBoost(true);
 
             if (m_uc480.CaptureVideo(uc480.IS_WAIT) == uc480.IS_SUCCESS)
             {
@@ -166,13 +126,10 @@ namespace SatelliteServer
             }
         }
 
-        public int setAutoGainBoost(bool yes)
+        public void setAutoGain()
         {
-            double autoGainEnable = 1;
-            double zero = 0;
-            int ret = m_uc480.SetAutoParameter(uc480.IS_SET_ENABLE_AUTO_GAIN, ref autoGainEnable, ref zero);
-
-            return ret;
+            double autoGainEnable = 1, zero = 0;
+            m_uc480.SetAutoParameter(uc480.IS_SET_ENABLE_AUTO_GAIN, ref autoGainEnable, ref zero);
         }
 
         public bool IsVideoStarted()

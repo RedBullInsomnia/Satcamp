@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
 
 namespace SatelliteServer
@@ -16,26 +12,23 @@ namespace SatelliteServer
         // Drivers
         private Um6Driver _um6Driver;
         private ServoDriver _servoDriver;
-        
+
         // Service
         private SatService _satService;
-        
+
         // Control parameters
-        
+
         private double _pitchStabAngle, _yawStabAngle;
         private double _Kp, _Ki;
-        private double _perrInt, _yerrInt;
+        //private double _perrInt, _yerrInt;
         private double RATIO_ANGLE_SERVO_POS = 11.11;
 
-        public ControlThread(Um6Driver um6Driver, ServoDriver servoDriver, SatService satService, double pitchStabAngle, double yawStabAngle)
+        public ControlThread(Um6Driver um6Driver, ServoDriver servoDriver, double pitchStabAngle, double yawStabAngle)
         {
             _um6Driver = um6Driver;
             _servoDriver = servoDriver;
-            _satService = satService;
             _pitchStabAngle = pitchStabAngle;
             _yawStabAngle = yawStabAngle;
-            _perrInt = 0;
-            _yerrInt = 0;
         }
 
         protected override void work()
@@ -51,9 +44,11 @@ namespace SatelliteServer
                     _Ki = _satService._ki;
 
                     pid();
-                    Thread.Sleep(2);
+                    Thread.Sleep(1);
                 }
-            } catch(Exception e) {
+            }
+            catch (Exception e)
+            {
                 Logger.instance().log("Error occurred during the execution of the control thread : " + e.Message);
                 _satService._bStabilizationActive = false;
                 _satService._bStabilizationChanged = true;
@@ -65,40 +60,52 @@ namespace SatelliteServer
 
         void pid()
         {
-           //Calculate the error on the pitch axis
-            double pitch_error = _um6Driver.Angles[1] - _pitchStabAngle;
-            _perrInt += pitch_error;
+            //Calculate the error on the pitch axis
+            double pitch_error = _um6Driver.Pitch - _pitchStabAngle;
 
-            int pitchVal = _satService._servoPos[Constants.PITCH_SERVO_ADDR] 
-                                + (int)(pitch_error * _Kp * RATIO_ANGLE_SERVO_POS) 
-                                + (int)(_perrInt * _Ki * RATIO_ANGLE_SERVO_POS);
+            int _pitchVal = _satService._servoPos[Constants.PITCH_SERVO_ADDR]
+                                + (int)(pitch_error * _Kp * RATIO_ANGLE_SERVO_POS);
 
+            /* Debug
             Logger.instance().log(" [PITCH] Error         : " + pitch_error);
-            //Logger.instance().log(" [PITCH] Integral      : " + _perrInt);
+            Logger.instance().log(" [PITCH] Integral      : " + _perrInt);
             Logger.instance().log(" [PITCH] Curr pos      : " + _satService._servoPos[Constants.PITCH_SERVO_ADDR]);
             Logger.instance().log(" [PITCH] Error contr.  : " + (int)(pitch_error * _Kp * RATIO_ANGLE_SERVO_POS));
-            //Logger.instance().log(" [PITCH] Integ. contr. : " + (int)(_perrInt * _Ki * RATIO_ANGLE_SERVO_POS));
-            
+            Logger.instance().log(" [PITCH] Integ. contr. : " + (int)(_perrInt * _Ki * RATIO_ANGLE_SERVO_POS));
+            */
+
             // Calculate the error on the yaw axis
-            double yaw_error = _um6Driver.Angles[2] - _yawStabAngle;
-            _yerrInt += yaw_error;
+            double yaw_error = _um6Driver.Yaw - _yawStabAngle;
 
-            int yawVal = _satService._servoPos[Constants.YAW_SERVO_ADDR]
-                                + (int)(yaw_error * _Kp * RATIO_ANGLE_SERVO_POS)
-                                + (int)(_yerrInt * _Ki * RATIO_ANGLE_SERVO_POS);
+            ushort _yawVal = (ushort)(_satService._servoPos[Constants.YAW_SERVO_ADDR]
+                                + (yaw_error * _Kp * RATIO_ANGLE_SERVO_POS));
 
+            /* Debug
             Logger.instance().log(" [YAW] Error         : " + yaw_error);
-            //Logger.instance().log(" [YAW] Integral      : " + _yerrInt);
+            Logger.instance().log(" [YAW] Integral      : " + _yerrInt);
             Logger.instance().log(" [YAW] Curr pos      : " + _satService._servoPos[Constants.YAW_SERVO_ADDR]);
             Logger.instance().log(" [YAW] Error contr.  : " + (int)(yaw_error * _Kp * RATIO_ANGLE_SERVO_POS));
-            //Logger.instance().log(" [YAW] Integ. contr. : " + (int)(_yerrInt * _Ki * RATIO_ANGLE_SERVO_POS));
+            Logger.instance().log(" [YAW] Integ. contr. : " + (int)(_yerrInt * _Ki * RATIO_ANGLE_SERVO_POS));
+            */
 
             // send orders to the servos
-            _servoDriver.SetServo(Constants.PITCH_SERVO_ADDR, (ushort) clamp(pitchVal, Constants.MAX_SERVO_POS, Constants.MIN_SERVO_POS));
-            Thread.Sleep(1);
-            _servoDriver.SetServo(Constants.YAW_SERVO_ADDR, (ushort) clamp(yawVal, Constants.MAX_SERVO_POS, Constants.MIN_SERVO_POS));
+            if (_pitchVal != _satService._servoPos[Constants.PITCH_SERVO_ADDR])
+            {
+                ushort pitchVal = (ushort)clamp(_pitchVal, Constants.MAX_SERVO_POS, Constants.MIN_SERVO_POS);
+                _servoDriver.SetServo(Constants.PITCH_SERVO_ADDR, pitchVal);
+                //_satService.SetServoPos(Constants.PITCH_SERVO_ADDR, pitchVal);
+            }
 
-            Logger.instance().log("Correction (pitch, yaw) : (" + pitchVal + ", " + yawVal + ")");
+            Thread.Sleep(1);
+            if (_yawVal != _satService._servoPos[Constants.YAW_SERVO_ADDR])
+            {
+                ushort yawVal = (ushort)clamp(_yawVal, Constants.MAX_SERVO_POS, Constants.MIN_SERVO_POS);
+                _servoDriver.SetServo(Constants.YAW_SERVO_ADDR, yawVal);
+                //_satService.SetServoPos(Constants.YAW_SERVO_ADDR, yawVal);
+            }
+
+            // Debug
+            // Logger.instance().log("Correction (pitch, yaw) : (" + pitchVal + ", " + yawVal + ")");
         }
 
         private int clamp(int a, int max, int min)

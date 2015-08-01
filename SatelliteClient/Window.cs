@@ -31,9 +31,6 @@ namespace SatelliteClient
 
             _updateTimer = new System.Timers.Timer(50);
             _updateTimer.Elapsed += _updateTimer_Elapsed;
-            //serviceConnect();
-            _orientation_fetcher = new OrientationFetcher(_satService);
-            _frame_fetcher = new FrameFetcher(_satService, pictureBox);
         }
 
         private void serviceConnect()
@@ -50,7 +47,7 @@ namespace SatelliteClient
                         binding,
                         "net.tcp://" + IPAdress.Text + ":8000");
             _satService = _scf.CreateChannel();
-            Console.WriteLine("Sat service ok");
+            Console.WriteLine("Sat service ok (connected to server)");
         }
 
         private void serviceDisconnect()
@@ -103,7 +100,11 @@ namespace SatelliteClient
                 IPAdress.Enabled = false;
                 stabilizeCb.Enabled = true; // to enable/disable the controller server side
 
+
+                _orientation_fetcher = new OrientationFetcher(_satService);
                 _orientation_fetcher.Start();
+
+                _frame_fetcher = new FrameFetcher(_satService, pictureBox);
                 _frame_fetcher.Start();
 
                 _updateTimer.Enabled = true;
@@ -224,7 +225,7 @@ namespace SatelliteClient
         {
             this.BeginInvoke(new Action(() =>
             {
-                _orientation_fetcher.SetServoPitch(pitchTrackBar.Value);
+                _orientation_fetcher.SetServoPitch((ushort)pitchTrackBar.Value);
             }));
         }
 
@@ -232,7 +233,7 @@ namespace SatelliteClient
         {
             this.BeginInvoke(new Action(() =>
             {
-                _orientation_fetcher.SetServoYaw(yawTrackBar.Value);
+                _orientation_fetcher.SetServoYaw((ushort)yawTrackBar.Value);
             }));
         }
 

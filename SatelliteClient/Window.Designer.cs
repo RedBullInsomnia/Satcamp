@@ -306,7 +306,7 @@ namespace SatelliteClient
             // 
             this.frameRateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.frameRateLabel.AutoSize = true;
-            this.frameRateLabel.Location = new System.Drawing.Point(188, 660);
+            this.frameRateLabel.Location = new System.Drawing.Point(292, 660);
             this.frameRateLabel.Name = "frameRateLabel";
             this.frameRateLabel.Size = new System.Drawing.Size(0, 13);
             this.frameRateLabel.TabIndex = 10;
@@ -382,16 +382,16 @@ namespace SatelliteClient
             // savePathBox
             // 
             this.savePathBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.savePathBox.Location = new System.Drawing.Point(356, 657);
+            this.savePathBox.Location = new System.Drawing.Point(416, 657);
             this.savePathBox.Name = "savePathBox";
-            this.savePathBox.Size = new System.Drawing.Size(332, 20);
+            this.savePathBox.Size = new System.Drawing.Size(272, 20);
             this.savePathBox.TabIndex = 12;
             // 
             // label6
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(288, 660);
+            this.label6.Location = new System.Drawing.Point(348, 660);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(62, 13);
             this.label6.TabIndex = 13;

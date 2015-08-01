@@ -18,7 +18,10 @@ namespace SatelliteServer
         /// <summary>
         /// The euler angles parameter
         /// </summary>
-        public double[] Angles { get { lock (this) { return _dAngles; } } }
+        //public double[] Angles { get { lock (this) { return _dAngles; } } }
+        public double Roll { get { lock (this) { return _dAngles[0]; } } }
+        public double Pitch { get { lock (this) { return _dAngles[1]; } } }
+        public double Yaw { get { lock (this) { return _dAngles[2]; } } }
 
         public Um6Driver(string portName, int baudRate)
         {
